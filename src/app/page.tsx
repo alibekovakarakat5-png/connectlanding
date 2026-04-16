@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { useRef, useState, useCallback } from "react";
 
 // ========================
 // ANIMATION HELPERS
@@ -96,49 +96,121 @@ function Hero() {
           </FadeIn>
         </div>
 
-        {/* Phone mockup */}
+        {/* Dashboard mockup */}
         <FadeIn delay={0.3} className="flex-1 flex justify-center">
-          <div className="phone-3d">
-            <div className="phone-inner relative w-[300px] h-[600px] rounded-[3rem] bg-gradient-to-b from-gray-800 to-gray-900 p-3 shadow-2xl glow-green">
-              <div className="w-full h-full rounded-[2.4rem] bg-[#0b141a] overflow-hidden flex flex-col">
-                <div className="bg-[#1f2c33] px-4 py-3 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-sm">M</div>
-                  <div><div className="text-white text-sm font-semibold">Мой Магазин</div><div className="text-green-400 text-xs">онлайн</div></div>
+          <motion.div
+            initial={{ opacity: 0, y: 40, rotateX: 8 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-[520px]"
+            style={{ perspective: "1200px" }}
+          >
+            {/* Glow behind */}
+            <div className="absolute -inset-4 bg-green-500/10 rounded-3xl blur-3xl" />
+
+            {/* Browser frame */}
+            <div className="relative rounded-2xl border border-white/10 bg-[#0d1117] overflow-hidden shadow-2xl shadow-black/50">
+              {/* Browser bar */}
+              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/5">
+                <div className="flex gap-1.5">
+                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
                 </div>
-                <div className="flex-1 p-3 space-y-2 overflow-hidden">
-                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1 }}
-                    className="bg-[#1f2c33] rounded-xl rounded-tl-sm px-3 py-2 max-w-[85%] text-sm">
-                    Привет! Хотите посмотреть каталог?
-                  </motion.div>
-                  <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.5 }}
-                    className="bg-[#005c4b] rounded-xl rounded-tr-sm px-3 py-2 max-w-[75%] ml-auto text-sm">
-                    Да, покажите!
-                  </motion.div>
-                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 2 }}
-                    className="bg-[#1f2c33] rounded-xl rounded-tl-sm px-3 py-2 max-w-[85%] text-sm">
-                    Наши товары:
-                  </motion.div>
-                  <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2.5 }}
-                    className="bg-[#1f2c33] rounded-xl px-3 py-3 max-w-[90%] text-sm space-y-2">
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
-                      <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-lg">&#x1F45F;</div>
-                      <div className="flex-1"><div className="font-semibold text-xs">Nike Air Max</div><div className="text-green-400 text-xs font-bold">45 000 &#8376;</div></div>
+                <div className="flex-1 mx-3">
+                  <div className="bg-[#0d1117] rounded-lg px-3 py-1.5 text-xs text-gray-500 text-center border border-white/5">
+                    app.connect.kz/dashboard
+                  </div>
+                </div>
+              </div>
+
+              {/* Dashboard content */}
+              <div className="flex">
+                {/* Mini sidebar */}
+                <div className="w-12 bg-[#0d1117] border-r border-white/5 py-3 flex flex-col items-center gap-3">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white text-[10px] font-bold">C</div>
+                  <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-gray-500 text-[10px]">&#9776;</div>
+                  <div className="w-6 h-6 rounded-md bg-green-500/10 flex items-center justify-center text-green-400 text-[10px]">&#9993;</div>
+                  <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-gray-500 text-[10px]">&#9778;</div>
+                </div>
+
+                {/* Chat area */}
+                <div className="flex-1 bg-[#0b141a]">
+                  {/* Chat header */}
+                  <div className="bg-[#1f2c33] px-4 py-2.5 flex items-center gap-3 border-b border-white/5">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xs">A</div>
+                    <div className="flex-1">
+                      <div className="text-white text-xs font-semibold">Айгуль +7 707 ***</div>
+                      <div className="text-green-400 text-[10px]">&#9679; онлайн</div>
                     </div>
-                    <div className="flex items-center gap-2 p-2 rounded-lg bg-white/5">
-                      <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-lg">&#x1F455;</div>
-                      <div className="flex-1"><div className="font-semibold text-xs">Oversize Tee</div><div className="text-green-400 text-xs font-bold">8 500 &#8376;</div></div>
+                    <div className="flex gap-2 text-gray-500 text-xs">
+                      <span>&#128222;</span>
+                      <span>&#8942;</span>
                     </div>
-                  </motion.div>
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3 }}
-                    className="flex gap-2">
-                    <div className="px-3 py-1.5 rounded-full border border-green-500/30 text-green-400 text-xs font-medium">Купить</div>
-                    <div className="px-3 py-1.5 rounded-full border border-white/10 text-gray-400 text-xs">Каталог</div>
-                    <div className="px-3 py-1.5 rounded-full border border-white/10 text-gray-400 text-xs">Запись</div>
-                  </motion.div>
+                  </div>
+
+                  {/* Messages */}
+                  <div className="p-3 space-y-2 h-[280px] overflow-hidden">
+                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8, duration: 0.5 }}
+                      className="bg-[#1f2c33] rounded-xl rounded-tl-sm px-3 py-2 max-w-[80%] text-xs leading-relaxed">
+                      Здравствуйте! Хочу записаться на маникюр
+                    </motion.div>
+
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.4, duration: 0.5 }}
+                      className="bg-[#005c4b] rounded-xl rounded-tr-sm px-3 py-2 max-w-[80%] ml-auto text-xs leading-relaxed">
+                      Добро пожаловать! Выберите услугу:
+                    </motion.div>
+
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2, duration: 0.4 }}
+                      className="bg-[#1a2332] rounded-xl border border-white/5 px-3 py-2.5 max-w-[85%] ml-auto space-y-1.5">
+                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Наши услуги</div>
+                      {[
+                        { name: "Маникюр классический", price: "5 000 ₸" },
+                        { name: "Маникюр + покрытие", price: "8 000 ₸" },
+                        { name: "Педикюр", price: "6 500 ₸" },
+                      ].map((s, i) => (
+                        <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 2.2 + i * 0.15 }}
+                          className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] text-xs">
+                          <span className="text-gray-200">{s.name}</span>
+                          <span className="text-green-400 font-semibold text-[11px]">{s.price}</span>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+
+                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3, duration: 0.4 }}
+                      className="flex gap-1.5 ml-auto max-w-[85%] justify-end">
+                      <div className="px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-medium cursor-pointer hover:bg-green-500/20 transition">
+                        &#128197; Записаться
+                      </div>
+                      <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-400 text-[10px] cursor-pointer hover:bg-white/10 transition">
+                        &#128218; Каталог
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Input */}
+                  <div className="px-3 pb-3">
+                    <div className="bg-[#1f2c33] rounded-full px-4 py-2 flex items-center gap-2 text-xs text-gray-500 border border-white/5">
+                      <span>&#128578;</span>
+                      <span className="flex-1">Введите сообщение...</span>
+                      <span className="text-green-400">&#10148;</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+
+            {/* Floating badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 3.5, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute -bottom-4 -right-4 px-4 py-2 rounded-xl bg-[#0d1117] border border-green-500/20 shadow-xl shadow-black/30"
+            >
+              <div className="text-[10px] text-gray-500">Антибан</div>
+              <div className="text-green-400 font-bold text-sm">&#9679; Защита активна</div>
+            </motion.div>
+          </motion.div>
         </FadeIn>
       </div>
     </section>
@@ -335,15 +407,269 @@ function Comparison() {
 // PRICING
 // ========================
 
+// ========================
+// INTERACTIVE DEMO
+// ========================
+
+interface ChatMsg {
+  id: number;
+  from: "bot" | "user";
+  text: string;
+  type?: "text" | "buttons" | "card" | "success";
+  buttons?: Array<{ label: string; value: string }>;
+  card?: { title: string; items: Array<{ name: string; price: string }> };
+}
+
+function InteractiveDemo() {
+  const [messages, setMessages] = useState<ChatMsg[]>([
+    { id: 0, from: "bot", text: "Привет! 👋 Я бот салона красоты. Чем могу помочь?", type: "buttons",
+      buttons: [
+        { label: "💅 Записаться", value: "book" },
+        { label: "📋 Наши услуги", value: "services" },
+        { label: "📍 Контакты", value: "contacts" },
+      ]
+    }
+  ]);
+  const [step, setStep] = useState(0);
+  const [typing, setTyping] = useState(false);
+  const chatRef = useRef<HTMLDivElement>(null);
+
+  const addBotMsg = useCallback((msg: Omit<ChatMsg, "id" | "from">, delayMs = 800) => {
+    setTyping(true);
+    setTimeout(() => {
+      setTyping(false);
+      setMessages(prev => [...prev, { ...msg, id: prev.length, from: "bot" }]);
+      setTimeout(() => chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" }), 100);
+    }, delayMs);
+  }, []);
+
+  const handleChoice = useCallback((value: string) => {
+    const userText: Record<string, string> = {
+      book: "💅 Записаться", services: "📋 Наши услуги", contacts: "📍 Контакты",
+      manicure: "Маникюр + покрытие — 8 000 ₸", pedicure: "Педикюр — 6 500 ₸", brows: "Брови — 4 000 ₸",
+      time1: "Завтра, 14:00", time2: "Завтра, 16:30", time3: "Послезавтра, 11:00",
+      confirm: "✅ Подтвердить", restart: "🔄 Начать заново",
+    };
+
+    setMessages(prev => [...prev, { id: prev.length, from: "user", text: userText[value] || value, type: "text" }]);
+
+    if (value === "restart") {
+      setStep(0);
+      setTimeout(() => {
+        setMessages([{ id: 0, from: "bot", text: "Привет! 👋 Я бот салона красоты. Чем могу помочь?", type: "buttons",
+          buttons: [
+            { label: "💅 Записаться", value: "book" },
+            { label: "📋 Наши услуги", value: "services" },
+            { label: "📍 Контакты", value: "contacts" },
+          ]
+        }]);
+      }, 400);
+      return;
+    }
+
+    if (value === "services" || value === "book") {
+      setStep(1);
+      addBotMsg({
+        text: "Выберите услугу:", type: "card",
+        card: { title: "Наши услуги", items: [
+          { name: "Маникюр + покрытие", price: "8 000 ₸" },
+          { name: "Педикюр", price: "6 500 ₸" },
+          { name: "Брови", price: "4 000 ₸" },
+        ]},
+        buttons: [
+          { label: "Маникюр — 8 000 ₸", value: "manicure" },
+          { label: "Педикюр — 6 500 ₸", value: "pedicure" },
+          { label: "Брови — 4 000 ₸", value: "brows" },
+        ]
+      });
+    } else if (value === "contacts") {
+      addBotMsg({ text: "📍 Алматы, ул. Абая 52\n📞 +7 707 123 4567\n🕐 Пн-Сб 9:00–20:00", type: "buttons",
+        buttons: [{ label: "💅 Записаться", value: "book" }, { label: "🔄 Начать заново", value: "restart" }]
+      });
+    } else if (["manicure", "pedicure", "brows"].includes(value)) {
+      setStep(2);
+      addBotMsg({ text: "Выберите удобное время:", type: "buttons",
+        buttons: [
+          { label: "Завтра, 14:00", value: "time1" },
+          { label: "Завтра, 16:30", value: "time2" },
+          { label: "Послезавтра, 11:00", value: "time3" },
+        ]
+      });
+    } else if (["time1", "time2", "time3"].includes(value)) {
+      setStep(3);
+      const timeMap: Record<string, string> = { time1: "завтра в 14:00", time2: "завтра в 16:30", time3: "послезавтра в 11:00" };
+      addBotMsg({ text: `Отлично! Подтвердите запись:\n\n📋 Услуга: ${messages.find(m => m.from === "user" && m.id > 1)?.text?.split("—")[0]?.trim() || "Маникюр"}\n🕐 Время: ${timeMap[value]}\n💰 Стоимость: от 4 000 ₸`, type: "buttons",
+        buttons: [
+          { label: "✅ Подтвердить", value: "confirm" },
+          { label: "🔄 Начать заново", value: "restart" },
+        ]
+      });
+    } else if (value === "confirm") {
+      setStep(4);
+      addBotMsg({ text: "✅ Запись подтверждена!\n\nМы отправим напоминание за 2 часа.\nСпасибо, что выбрали нас! 💚", type: "success",
+        buttons: [{ label: "🔄 Попробовать ещё", value: "restart" }]
+      });
+    }
+  }, [messages, addBotMsg]);
+
+  return (
+    <section className="py-20 bg-[#080c0c]">
+      <div className="max-w-6xl mx-auto px-6">
+        <FadeIn className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/20 bg-green-500/5 text-green-400 text-sm font-medium mb-4">
+            Интерактивное демо
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold">Попробуйте прямо сейчас</h2>
+          <p className="text-gray-400 mt-3 text-lg">Нажимайте кнопки — как будто вы клиент в WhatsApp</p>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <div className="max-w-[440px] mx-auto">
+            {/* Glow */}
+            <div className="relative">
+              <div className="absolute -inset-6 bg-green-500/5 rounded-[2rem] blur-2xl" />
+
+              {/* Browser frame */}
+              <div className="relative rounded-2xl border border-white/10 bg-[#0d1117] overflow-hidden shadow-2xl shadow-black/50">
+                {/* Browser bar */}
+                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-white/5">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+                  </div>
+                  <div className="flex-1 mx-8">
+                    <div className="bg-[#0d1117] rounded-lg px-3 py-1 text-[10px] text-gray-500 text-center border border-white/5">
+                      WhatsApp — Салон красоты
+                    </div>
+                  </div>
+                </div>
+
+                {/* WhatsApp header */}
+                <div className="bg-[#1f2c33] px-4 py-2.5 flex items-center gap-3 border-b border-white/5">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">S</div>
+                  <div className="flex-1">
+                    <div className="text-white text-sm font-semibold">Салон Beauty</div>
+                    <div className="text-green-400 text-[10px] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" /> Бот Connect
+                    </div>
+                  </div>
+                </div>
+
+                {/* Chat messages */}
+                <div ref={chatRef} className="h-[400px] overflow-y-auto p-3 space-y-2.5 scroll-smooth" style={{ background: "linear-gradient(180deg, #0b141a 0%, #0a1014 100%)" }}>
+                  <AnimatePresence>
+                    {messages.map((msg) => (
+                      <motion.div
+                        key={msg.id}
+                        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                      >
+                        {msg.from === "user" ? (
+                          <div className="flex justify-end">
+                            <div className="bg-[#005c4b] rounded-2xl rounded-tr-sm px-3.5 py-2 max-w-[80%] text-sm leading-relaxed">
+                              {msg.text}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <div className={`rounded-2xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%] text-sm leading-relaxed ${msg.type === "success" ? "bg-green-500/10 border border-green-500/20" : "bg-[#1f2c33]"}`}>
+                              <div className="whitespace-pre-line">{msg.text}</div>
+
+                              {/* Card with items */}
+                              {msg.card && (
+                                <div className="mt-2 space-y-1">
+                                  {msg.card.items.map((item, j) => (
+                                    <div key={j} className="flex items-center justify-between p-2 rounded-lg bg-white/[0.04] text-xs">
+                                      <span className="text-gray-300">{item.name}</span>
+                                      <span className="text-green-400 font-semibold">{item.price}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Buttons */}
+                            {msg.buttons && msg.id === messages[messages.length - 1].id && (
+                              <motion.div
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.15, duration: 0.3 }}
+                                className="flex flex-wrap gap-1.5"
+                              >
+                                {msg.buttons.map((btn, j) => (
+                                  <motion.button
+                                    key={j}
+                                    whileHover={{ scale: 1.03 }}
+                                    whileTap={{ scale: 0.97 }}
+                                    onClick={() => handleChoice(btn.value)}
+                                    className="px-3.5 py-2 rounded-xl bg-[#1a2332] border border-white/10 text-xs font-medium text-gray-200 hover:border-green-500/30 hover:bg-green-500/5 hover:text-green-400 transition-all duration-200 cursor-pointer"
+                                  >
+                                    {btn.label}
+                                  </motion.button>
+                                ))}
+                              </motion.div>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+
+                  {/* Typing indicator */}
+                  {typing && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-1 px-4 py-3 bg-[#1f2c33] rounded-2xl rounded-tl-sm w-16">
+                      {[0, 1, 2].map(i => (
+                        <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-400"
+                          animate={{ y: [0, -4, 0] }}
+                          transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
+                        />
+                      ))}
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Input bar */}
+                <div className="px-3 py-2.5 bg-[#1f2c33] border-t border-white/5">
+                  <div className="bg-[#0b141a] rounded-full px-4 py-2.5 flex items-center gap-3 text-xs text-gray-500 border border-white/5">
+                    <span className="text-base">&#128578;</span>
+                    <span className="flex-1 text-gray-600">Выберите кнопку выше...</span>
+                    <span className="text-green-500 text-base">&#127908;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Step indicator */}
+            <div className="flex justify-center gap-2 mt-6">
+              {["Приветствие", "Услуга", "Время", "Подтверждение", "Готово"].map((label, i) => (
+                <div key={i} className="flex items-center gap-1.5">
+                  <div className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= step ? "bg-green-400 shadow-sm shadow-green-400/50" : "bg-gray-700"}`} />
+                  <span className={`text-[10px] hidden sm:inline transition-colors ${i <= step ? "text-green-400" : "text-gray-600"}`}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+// ========================
+// PRICING
+// ========================
+
 function Pricing() {
   const [annual, setAnnual] = useState(false);
   const plans = [
-    { name: "Starter", price: annual ? 24 : 29, period: annual ? "/мес (год)" : "/мес", desc: "Для начинающих",
-      features: ["3 WhatsApp-инстанса", "Каталог товаров", "Рассылки", "Антибан-защита", "Поддержка в чате"], cta: "Начать бесплатно", highlighted: false },
-    { name: "Pro", price: annual ? 65 : 79, period: annual ? "/мес (год)" : "/мес", desc: "Для растущего бизнеса",
-      features: ["10 инстансов", "Всё из Starter", "AI чат-боты (OpenAI)", "Flow Builder", "Запись на приём", "Quick Replies", "Приоритетная поддержка"], cta: "Попробовать Pro", highlighted: true },
-    { name: "Business", price: annual ? 165 : 199, period: annual ? "/мес (год)" : "/мес", desc: "Для компаний",
-      features: ["50 инстансов", "Всё из Pro", "17+ интеграций", "Команды и роли", "Webhook + RabbitMQ", "Персональный менеджер"], cta: "Связаться", highlighted: false },
+    { name: "Starter", price: annual ? "11 990" : "14 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для начинающих",
+      features: ["1 WhatsApp-номер", "Каталог товаров и услуг", "Запись на приём", "Рассылки", "Антибан-защита", "Поддержка в чате"], cta: "Начать бесплатно", highlighted: false },
+    { name: "Pro", price: annual ? "23 990" : "29 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для растущего бизнеса",
+      features: ["5 WhatsApp-номеров", "Всё из Starter", "AI чат-боты (OpenAI)", "Flow Builder", "Quick Replies", "Приоритетная поддержка"], cta: "Попробовать Pro", highlighted: true },
+    { name: "Business", price: annual ? "47 990" : "59 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для компаний",
+      features: ["20 WhatsApp-номеров", "Всё из Pro", "17+ интеграций", "Команды и роли", "Webhook + RabbitMQ", "Персональный менеджер"], cta: "Связаться", highlighted: false },
   ];
   return (
     <section id="pricing" className="py-20">
@@ -362,7 +688,7 @@ function Pricing() {
               <div className={`relative p-8 rounded-3xl border ${p.highlighted ? "border-green-500/30 bg-green-500/5 glow-green" : "border-white/5 bg-[#0d1117]"} flex flex-col h-full`}>
                 {p.highlighted && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-green-500 text-white text-xs font-bold">Популярный</div>}
                 <div className="mb-6"><h3 className="text-xl font-bold">{p.name}</h3><p className="text-gray-500 text-sm mt-1">{p.desc}</p></div>
-                <div className="mb-6"><span className="text-4xl font-extrabold">${p.price}</span><span className="text-gray-500 text-sm">{p.period}</span></div>
+                <div className="mb-6"><span className="text-4xl font-extrabold">{p.price} {p.currency}</span><span className="text-gray-500 text-sm">{p.period}</span></div>
                 <ul className="space-y-3 mb-8 flex-1">
                   {p.features.map((f, j) => <li key={j} className="flex items-center gap-2 text-sm text-gray-300"><span className="text-green-400">&#10003;</span> {f}</li>)}
                 </ul>
@@ -464,7 +790,7 @@ export default function Home() {
       <Problem />
       <HowItWorks />
       <Features />
-      <Comparison />
+      <InteractiveDemo />
       <Pricing />
       <FAQ />
       <FinalCTA />
