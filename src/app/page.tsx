@@ -4,6 +4,18 @@ import { AnimatePresence, motion, useInView } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
 
 // ========================
+// CONSTANTS
+// ========================
+
+// Land users straight into the registration tab + onboarding wizard.
+const APP_URL = "https://connect.esepkz.com/app/?signup=true";
+const ESEP_URL = "https://esepkz.com";
+const TRIAL_DAYS = 7;
+const PRICE_KZT = 25000;
+const ESEP_VALUE_KZT = 14990; // Esep monthly price — бонус-стоимость
+const SUPPORT_WA = "77075884651";
+
+// ========================
 // ANIMATION HELPERS
 // ========================
 
@@ -13,7 +25,7 @@ function FadeIn({ children, delay = 0, className = "" }: { children: React.React
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
       className={className}
@@ -24,28 +36,76 @@ function FadeIn({ children, delay = 0, className = "" }: { children: React.React
 }
 
 // ========================
-// NAVBAR
+// NAVBAR (mobile-friendly)
 // ========================
 
 function Navbar() {
+  const [open, setOpen] = useState(false);
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[#050808]/80 border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-extrabold text-sm">C</div>
-          <span className="font-bold text-lg tracking-tight">Connect</span>
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-2 sm:gap-2.5">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-extrabold text-sm shadow-lg shadow-green-500/30">C</div>
+            <span className="font-bold text-base sm:text-lg tracking-tight text-slate-900">Connect</span>
+          </a>
+          <div className="hidden md:flex items-center gap-7 text-sm text-slate-600">
+            <a href="#features" className="hover:text-slate-900 transition">Возможности</a>
+            <a href="#how" className="hover:text-slate-900 transition">Как работает</a>
+            <a href="#pricing" className="hover:text-slate-900 transition">Цена</a>
+            <a href="#faq" className="hover:text-slate-900 transition">FAQ</a>
+          </div>
+          <div className="flex items-center gap-2">
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white text-xs sm:text-sm font-semibold hover:from-green-400 hover:to-green-500 transition-all shadow-md shadow-green-500/25">
+              Начать бесплатно
+            </a>
+            <button
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700"
+              aria-label="menu"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {open ? (
+                  <path d="M18 6L6 18M6 6l12 12" />
+                ) : (
+                  <path d="M3 12h18M3 6h18M3 18h18" />
+                )}
+              </svg>
+            </button>
+          </div>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-sm text-gray-400">
-          <a href="#features" className="hover:text-white transition">Возможности</a>
-          <a href="#how" className="hover:text-white transition">Как работает</a>
-          <a href="#pricing" className="hover:text-white transition">Цены</a>
-          <a href="#faq" className="hover:text-white transition">FAQ</a>
-        </div>
-        <a href="#pricing" className="hidden sm:inline-flex px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-semibold hover:from-green-400 hover:to-green-500 transition-all shadow-lg shadow-green-500/20">
-          Попробовать бесплатно
-        </a>
-      </div>
-    </nav>
+      </nav>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed top-14 left-0 right-0 z-40 bg-white border-b border-slate-200 shadow-lg md:hidden"
+          >
+            <div className="px-4 py-4 flex flex-col gap-1">
+              {[
+                { href: "#features", label: "Возможности" },
+                { href: "#how", label: "Как работает" },
+                { href: "#pricing", label: "Цена" },
+                { href: "#faq", label: "FAQ" },
+              ].map((l) => (
+                <a key={l.href} href={l.href} onClick={() => setOpen(false)}
+                  className="px-3 py-3 rounded-lg text-slate-700 hover:bg-slate-50">
+                  {l.label}
+                </a>
+              ))}
+              <a href={APP_URL} target="_blank" rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+                className="mt-2 px-4 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold text-center">
+                Начать бесплатно
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -55,162 +115,95 @@ function Navbar() {
 
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden bg-grid">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-green-500/8 rounded-full blur-[150px]" />
-      <div className="relative max-w-7xl mx-auto px-6 py-20 flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
-        <div className="flex-1 text-center lg:text-left">
+    <section className="relative pt-20 sm:pt-28 pb-12 sm:pb-20 overflow-hidden bg-grid">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[400px] sm:h-[600px] bg-green-300/30 rounded-full blur-[120px]" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 items-center gap-10 lg:gap-16">
+        <div className="text-center lg:text-left order-1">
           <FadeIn>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/20 bg-green-500/5 text-green-400 text-sm font-medium mb-6">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              Новое поколение WhatsApp для бизнеса
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-green-500/20 bg-green-500/10 text-green-700 text-xs sm:text-sm font-medium mb-5 sm:mb-6">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              WhatsApp CRM для бизнеса Казахстана
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-6">
-              Продавайте в<span className="text-gradient"> WhatsApp</span><br />без ограничений
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-5 sm:mb-6 text-slate-900">
+              Продавайте в<span className="text-gradient"> WhatsApp</span><br className="hidden sm:block" /> на автопилоте
             </h1>
           </FadeIn>
           <FadeIn delay={0.2}>
-            <p className="text-lg text-gray-400 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
-              Каталог товаров, запись на приём, рассылки, чат-боты и защита от банов — всё в одной платформе. Подключите WhatsApp за 2 минуты.
+            <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 mb-7 sm:mb-8 leading-relaxed">
+              Каталог, заказы, рассылки и AI-бот в одном дашборде. Защита от банов WhatsApp. Подключение за 2 минуты.
             </p>
           </FadeIn>
           <FadeIn delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <a href="#pricing" className="px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-xl shadow-green-500/25 text-center">
-                Начать бесплатно — 7 дней
+            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+              <a href={APP_URL} target="_blank" rel="noopener noreferrer"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-base sm:text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-xl shadow-green-500/30 text-center">
+                Начать бесплатно — {TRIAL_DAYS} дней
               </a>
-              <a href="#how" className="px-8 py-4 rounded-2xl border border-white/10 text-gray-300 font-semibold hover:bg-white/5 transition text-center">
-                Как это работает →
+              <a href="#demo"
+                className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-white hover:border-slate-400 transition text-center">
+                Посмотреть демо ↓
               </a>
             </div>
           </FadeIn>
           <FadeIn delay={0.4}>
-            <div className="flex items-center gap-8 mt-10 justify-center lg:justify-start text-sm text-gray-500">
-              <div><span className="text-white font-bold text-xl">2 мин</span><br />подключение</div>
-              <div className="w-px h-8 bg-white/10" />
-              <div><span className="text-white font-bold text-xl">0 ₸</span><br />за сообщения</div>
-              <div className="w-px h-8 bg-white/10" />
-              <div><span className="text-white font-bold text-xl">24/7</span><br />чат-боты</div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-8 sm:mt-10 justify-center lg:justify-start text-xs sm:text-sm text-slate-500">
+              <div className="flex items-center gap-2">
+                <span className="text-green-600 text-base">✓</span> Без карты
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-green-600 text-base">✓</span> Установка бесплатно
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-green-600 text-base">✓</span> Поддержка 24/7
+              </div>
             </div>
+          </FadeIn>
+
+          {/* Esep bonus badge */}
+          <FadeIn delay={0.5}>
+            <a
+              href="#pricing"
+              className="mt-6 sm:mt-8 inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-300 text-slate-800 hover:from-amber-100 hover:to-yellow-100 transition group"
+            >
+              <span className="text-2xl">🎁</span>
+              <span className="text-xs sm:text-sm">
+                <strong className="text-amber-700">Бонус:</strong> при покупке тарифа — <strong>Esep в подарок</strong> (бухгалтерия для ИП, ценность {ESEP_VALUE_KZT.toLocaleString("ru-RU")} ₸/мес)
+                <span className="ml-1 text-amber-700 group-hover:underline">подробнее →</span>
+              </span>
+            </a>
           </FadeIn>
         </div>
 
-        {/* Dashboard mockup */}
-        <FadeIn delay={0.3} className="flex-1 flex justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40, rotateX: 8 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            transition={{ duration: 1, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[520px]"
-            style={{ perspective: "1200px" }}
-          >
-            {/* Glow behind */}
-            <div className="absolute -inset-4 bg-green-500/10 rounded-3xl blur-3xl" />
-
-            {/* Browser frame */}
-            <div className="relative rounded-2xl border border-white/10 bg-[#0d1117] overflow-hidden shadow-2xl shadow-black/50">
-              {/* Browser bar */}
-              <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/5">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                  <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+        {/* Hero visual: Remotion-rendered intro video */}
+        <FadeIn delay={0.3} className="order-2 flex justify-center">
+          <div className="relative w-full max-w-[520px]">
+            <div className="absolute -inset-4 bg-green-400/20 rounded-3xl blur-2xl" />
+            <div className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xl shadow-slate-300/50">
+              <video
+                className="w-full aspect-video object-cover bg-slate-100"
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="/connect-intro-poster.jpg"
+              >
+                <source src="/connect-intro.mp4" type="video/mp4" />
+              </video>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur border border-green-500/30 shadow-lg"
+              >
+                <div className="text-[10px] text-slate-500">Антибан</div>
+                <div className="text-green-600 font-bold text-xs flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Активна
                 </div>
-                <div className="flex-1 mx-3">
-                  <div className="bg-[#0d1117] rounded-lg px-3 py-1.5 text-xs text-gray-500 text-center border border-white/5">
-                    app.connect.kz/dashboard
-                  </div>
-                </div>
-              </div>
-
-              {/* Dashboard content */}
-              <div className="flex">
-                {/* Mini sidebar */}
-                <div className="w-12 bg-[#0d1117] border-r border-white/5 py-3 flex flex-col items-center gap-3">
-                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white text-[10px] font-bold">C</div>
-                  <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-gray-500 text-[10px]">&#9776;</div>
-                  <div className="w-6 h-6 rounded-md bg-green-500/10 flex items-center justify-center text-green-400 text-[10px]">&#9993;</div>
-                  <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center text-gray-500 text-[10px]">&#9778;</div>
-                </div>
-
-                {/* Chat area */}
-                <div className="flex-1 bg-[#0b141a]">
-                  {/* Chat header */}
-                  <div className="bg-[#1f2c33] px-4 py-2.5 flex items-center gap-3 border-b border-white/5">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xs">A</div>
-                    <div className="flex-1">
-                      <div className="text-white text-xs font-semibold">Айгуль +7 707 ***</div>
-                      <div className="text-green-400 text-[10px]">&#9679; онлайн</div>
-                    </div>
-                    <div className="flex gap-2 text-gray-500 text-xs">
-                      <span>&#128222;</span>
-                      <span>&#8942;</span>
-                    </div>
-                  </div>
-
-                  {/* Messages */}
-                  <div className="p-3 space-y-2 h-[280px] overflow-hidden">
-                    <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8, duration: 0.5 }}
-                      className="bg-[#1f2c33] rounded-xl rounded-tl-sm px-3 py-2 max-w-[80%] text-xs leading-relaxed">
-                      Здравствуйте! Хочу записаться на маникюр
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 1.4, duration: 0.5 }}
-                      className="bg-[#005c4b] rounded-xl rounded-tr-sm px-3 py-2 max-w-[80%] ml-auto text-xs leading-relaxed">
-                      Добро пожаловать! Выберите услугу:
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 2, duration: 0.4 }}
-                      className="bg-[#1a2332] rounded-xl border border-white/5 px-3 py-2.5 max-w-[85%] ml-auto space-y-1.5">
-                      <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">Наши услуги</div>
-                      {[
-                        { name: "Маникюр классический", price: "5 000 ₸" },
-                        { name: "Маникюр + покрытие", price: "8 000 ₸" },
-                        { name: "Педикюр", price: "6 500 ₸" },
-                      ].map((s, i) => (
-                        <motion.div key={i} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 2.2 + i * 0.15 }}
-                          className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] text-xs">
-                          <span className="text-gray-200">{s.name}</span>
-                          <span className="text-green-400 font-semibold text-[11px]">{s.price}</span>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 3, duration: 0.4 }}
-                      className="flex gap-1.5 ml-auto max-w-[85%] justify-end">
-                      <div className="px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-medium cursor-pointer hover:bg-green-500/20 transition">
-                        &#128197; Записаться
-                      </div>
-                      <div className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-gray-400 text-[10px] cursor-pointer hover:bg-white/10 transition">
-                        &#128218; Каталог
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  {/* Input */}
-                  <div className="px-3 pb-3">
-                    <div className="bg-[#1f2c33] rounded-full px-4 py-2 flex items-center gap-2 text-xs text-gray-500 border border-white/5">
-                      <span>&#128578;</span>
-                      <span className="flex-1">Введите сообщение...</span>
-                      <span className="text-green-400">&#10148;</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
             </div>
-
-            {/* Floating badge */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 3.5, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute -bottom-4 -right-4 px-4 py-2 rounded-xl bg-[#0d1117] border border-green-500/20 shadow-xl shadow-black/30"
-            >
-              <div className="text-[10px] text-gray-500">Антибан</div>
-              <div className="text-green-400 font-bold text-sm">&#9679; Защита активна</div>
-            </motion.div>
-          </motion.div>
+          </div>
         </FadeIn>
       </div>
     </section>
@@ -226,16 +219,16 @@ function StatsBar() {
     { value: "300+", label: "сообщений/час", desc: "с антибан-защитой" },
     { value: "17+", label: "интеграций", desc: "AI, CRM, боты" },
     { value: "5 уровней", label: "защиты", desc: "от банов WhatsApp" },
-    { value: "3 языка", label: "RU / EN / KZ", desc: "полная локализация" },
+    { value: "RU/EN/KZ", label: "локализация", desc: "три языка" },
   ];
   return (
-    <section className="border-y border-white/5 bg-[#080c0c]">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <section className="border-y border-slate-200 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
         {stats.map((s, i) => (
-          <FadeIn key={i} delay={i * 0.1} className="text-center">
+          <FadeIn key={i} delay={i * 0.08} className="text-center">
             <div className="text-2xl md:text-3xl font-extrabold text-gradient">{s.value}</div>
-            <div className="text-sm font-semibold text-white mt-1">{s.label}</div>
-            <div className="text-xs text-gray-500 mt-0.5">{s.desc}</div>
+            <div className="text-xs sm:text-sm font-semibold text-slate-900 mt-1">{s.label}</div>
+            <div className="text-[11px] sm:text-xs text-slate-500 mt-0.5">{s.desc}</div>
           </FadeIn>
         ))}
       </div>
@@ -249,24 +242,24 @@ function StatsBar() {
 
 function Problem() {
   const problems = [
-    { icon: "\u23F0", text: "Менеджер тратит 4+ часа/день на переписку в WhatsApp" },
-    { icon: "\uD83D\uDEAB", text: "Номера банят из-за массовых рассылок" },
-    { icon: "\uD83D\uDCCA", text: "Нет аналитики — не видно кто купил, кто ушёл" },
-    { icon: "\uD83E\uDD16", text: "Нет автоматизации — каждое сообщение вручную" },
+    { icon: "⏰", text: "Менеджер тратит 4+ часа/день на переписку" },
+    { icon: "🚫", text: "Номера банят за массовые рассылки" },
+    { icon: "📊", text: "Нет аналитики — не видно кто купил" },
+    { icon: "🤖", text: "Каждое сообщение пишется вручную" },
   ];
   return (
-    <section className="py-20">
-      <div className="max-w-5xl mx-auto px-6">
-        <FadeIn className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Знакомо?</h2>
-          <p className="text-gray-400 mt-3 text-lg">Эти проблемы решает Connect</p>
+    <section className="py-16 sm:py-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Знакомо?</h2>
+          <p className="text-slate-500 mt-3 text-base sm:text-lg">Эти проблемы решает Connect</p>
         </FadeIn>
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
           {problems.map((p, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <div className="flex items-start gap-4 p-5 rounded-2xl border border-red-500/10 bg-red-500/5 hover:border-red-500/20 transition">
-                <span className="text-2xl">{p.icon}</span>
-                <span className="text-gray-300">{p.text}</span>
+            <FadeIn key={i} delay={i * 0.08}>
+              <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-100">
+                <span className="text-2xl sm:text-3xl">{p.icon}</span>
+                <span className="text-slate-700 text-sm sm:text-base pt-0.5">{p.text}</span>
               </div>
             </FadeIn>
           ))}
@@ -282,25 +275,25 @@ function Problem() {
 
 function HowItWorks() {
   const steps = [
-    { num: "01", title: "Зарегистрируйтесь", desc: "Email + пароль. 10 секунд.", icon: "\uD83D\uDC64" },
-    { num: "02", title: "Подключите WhatsApp", desc: "Отсканируйте QR-код с телефона.", icon: "\uD83D\uDCF1" },
-    { num: "03", title: "Настройте бизнес", desc: "Добавьте товары, включите бота, запустите рассылку.", icon: "\uD83D\uDE80" },
+    { num: "01", title: "Регистрация", desc: "Email + пароль. 10 секунд.", icon: "👤" },
+    { num: "02", title: "QR-код", desc: "Сканируете телефоном — WhatsApp подключён.", icon: "📱" },
+    { num: "03", title: "Запуск", desc: "Добавьте товары, включите бота, шлите рассылки.", icon: "🚀" },
   ];
   return (
-    <section id="how" className="py-20 bg-[#080c0c]">
-      <div className="max-w-5xl mx-auto px-6">
-        <FadeIn className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Начните за 2 минуты</h2>
-          <p className="text-gray-400 mt-3 text-lg">Три шага до продаж в WhatsApp</p>
+    <section id="how" className="py-16 sm:py-20 bg-white border-y border-slate-200">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Старт за 2 минуты</h2>
+          <p className="text-slate-500 mt-3 text-base sm:text-lg">Три шага до продаж в WhatsApp</p>
         </FadeIn>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-5 sm:gap-8">
           {steps.map((s, i) => (
-            <FadeIn key={i} delay={i * 0.15}>
-              <div className="relative p-8 rounded-3xl border border-white/5 bg-[#0d1117] hover:border-green-500/20 transition group">
-                <div className="text-5xl mb-4">{s.icon}</div>
-                <div className="text-green-400 font-mono text-sm mb-2">{s.num}</div>
-                <h3 className="text-xl font-bold mb-2">{s.title}</h3>
-                <p className="text-gray-400 text-sm">{s.desc}</p>
+            <FadeIn key={i} delay={i * 0.12}>
+              <div className="relative p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white card-soft transition group">
+                <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">{s.icon}</div>
+                <div className="text-green-600 font-mono text-sm mb-2">{s.num}</div>
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-slate-900">{s.title}</h3>
+                <p className="text-slate-500 text-sm sm:text-base">{s.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -316,27 +309,27 @@ function HowItWorks() {
 
 function Features() {
   const features = [
-    { icon: "\uD83D\uDECD\uFE0F", title: "Каталог товаров", desc: "Добавляйте товары и услуги. Бот покажет их клиенту в WhatsApp с ценами и кнопками.", color: "from-green-500/10 to-green-600/5", border: "border-green-500/10" },
-    { icon: "\uD83D\uDCC5", title: "Запись на приём", desc: "Клиент выбирает дату и время через ссылку. Заявка приходит в дашборд.", color: "from-blue-500/10 to-blue-600/5", border: "border-blue-500/10" },
-    { icon: "\uD83D\uDCE2", title: "Рассылки", desc: "Массовая отправка по базе контактов с антибан-защитой и отслеживанием доставки.", color: "from-purple-500/10 to-purple-600/5", border: "border-purple-500/10" },
-    { icon: "\uD83E\uDD16", title: "Чат-боты с AI", desc: "OpenAI, Dify, Typebot — подключите умного бота который отвечает 24/7.", color: "from-orange-500/10 to-orange-600/5", border: "border-orange-500/10" },
-    { icon: "\uD83D\uDD04", title: "Flow Builder", desc: "Визуальный конструктор сценариев: кнопки, списки, формы, условия — без кода.", color: "from-pink-500/10 to-pink-600/5", border: "border-pink-500/10" },
-    { icon: "\uD83D\uDEE1\uFE0F", title: "Антибан-защита", desc: "5 уровней защиты: очередь, задержки, warmup, health monitor, anti-spam.", color: "from-emerald-500/10 to-emerald-600/5", border: "border-emerald-500/10" },
+    { icon: "🛍️", title: "Каталог товаров", desc: "Бот покажет товары с фото, ценами и кнопками заказа прямо в чате.", color: "from-green-50 to-emerald-50/40", border: "border-green-200/60", iconBg: "bg-green-100" },
+    { icon: "📅", title: "Запись на приём", desc: "Клиент выбирает услугу и время — заявка сразу в дашборде.", color: "from-blue-50 to-cyan-50/40", border: "border-blue-200/60", iconBg: "bg-blue-100" },
+    { icon: "📢", title: "Рассылки", desc: "Массовая отправка по сегментам с антибан-задержками.", color: "from-purple-50 to-fuchsia-50/40", border: "border-purple-200/60", iconBg: "bg-purple-100" },
+    { icon: "🤖", title: "AI чат-бот", desc: "Подключите OpenAI — бот отвечает 24/7 по вашей базе знаний.", color: "from-orange-50 to-amber-50/40", border: "border-orange-200/60", iconBg: "bg-orange-100" },
+    { icon: "👥", title: "CRM лидов", desc: "Статусы, теги, история переписки. Сегментация по поведению.", color: "from-pink-50 to-rose-50/40", border: "border-pink-200/60", iconBg: "bg-pink-100" },
+    { icon: "🛡️", title: "Антибан", desc: "5 уровней защиты: warmup, очередь, рандом-задержки, slowdown.", color: "from-emerald-50 to-teal-50/40", border: "border-emerald-200/60", iconBg: "bg-emerald-100" },
   ];
   return (
-    <section id="features" className="py-20">
-      <div className="max-w-7xl mx-auto px-6">
-        <FadeIn className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Всё для бизнеса в WhatsApp</h2>
-          <p className="text-gray-400 mt-3 text-lg">Каталог, запись, рассылки, боты — в одной платформе</p>
+    <section id="features" className="py-16 sm:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-12 sm:mb-16">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Всё для бизнеса в WhatsApp</h2>
+          <p className="text-slate-500 mt-3 text-base sm:text-lg">CRM, каталог, рассылки и AI — в одной платформе</p>
         </FadeIn>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((f, i) => (
-            <FadeIn key={i} delay={i * 0.08}>
-              <div className={`p-7 rounded-3xl border ${f.border} bg-gradient-to-br ${f.color} hover:scale-[1.02] transition-all duration-300 h-full`}>
-                <div className="text-4xl mb-4">{f.icon}</div>
-                <h3 className="text-lg font-bold mb-2">{f.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{f.desc}</p>
+            <FadeIn key={i} delay={i * 0.06}>
+              <div className={`p-6 sm:p-7 rounded-3xl border ${f.border} bg-gradient-to-br ${f.color} card-soft transition-all duration-300 h-full`}>
+                <div className={`w-12 h-12 rounded-2xl ${f.iconBg} flex items-center justify-center text-2xl mb-4`}>{f.icon}</div>
+                <h3 className="text-lg font-bold mb-2 text-slate-900">{f.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">{f.desc}</p>
               </div>
             </FadeIn>
           ))}
@@ -345,67 +338,6 @@ function Features() {
     </section>
   );
 }
-
-// ========================
-// COMPARISON
-// ========================
-
-function Comparison() {
-  const rows = [
-    { feature: "Каталог в WhatsApp", connect: true, aisar: false, wati: "$100+" },
-    { feature: "Антибан-защита", connect: true, aisar: false, wati: false },
-    { feature: "Flow Builder", connect: true, aisar: false, wati: "базовый" },
-    { feature: "AI-боты (OpenAI)", connect: true, aisar: false, wati: "доп" },
-    { feature: "Рассылки", connect: true, aisar: true, wati: true },
-    { feature: "Запись на приём", connect: true, aisar: false, wati: false },
-    { feature: "Интеграций", connect: "17+", aisar: "3", wati: "5" },
-    { feature: "RU/KZ локализация", connect: true, aisar: true, wati: false },
-    { feature: "Цена от", connect: "$29", aisar: "$30", wati: "$49" },
-  ];
-  const renderCell = (val: boolean | string) => {
-    if (val === true) return <span className="text-green-400 font-bold text-lg">&#10003;</span>;
-    if (val === false) return <span className="text-gray-600">&#10007;</span>;
-    return <span className="text-gray-300 text-sm">{val}</span>;
-  };
-  return (
-    <section className="py-20 bg-[#080c0c]">
-      <div className="max-w-4xl mx-auto px-6">
-        <FadeIn className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Сравнение с конкурентами</h2>
-          <p className="text-gray-400 mt-3">Почему выбирают Connect</p>
-        </FadeIn>
-        <FadeIn delay={0.2}>
-          <div className="rounded-2xl border border-white/5 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-white/5 bg-green-500/5">
-                  <th className="text-left p-4 text-gray-400 font-medium">Функция</th>
-                  <th className="p-4 text-green-400 font-bold">Connect</th>
-                  <th className="p-4 text-gray-400 font-medium">AISAR</th>
-                  <th className="p-4 text-gray-400 font-medium">WATI</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((r, i) => (
-                  <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition">
-                    <td className="p-4 text-gray-300">{r.feature}</td>
-                    <td className="p-4 text-center">{renderCell(r.connect)}</td>
-                    <td className="p-4 text-center">{renderCell(r.aisar)}</td>
-                    <td className="p-4 text-center">{renderCell(r.wati)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  );
-}
-
-// ========================
-// PRICING
-// ========================
 
 // ========================
 // INTERACTIVE DEMO
@@ -417,24 +349,24 @@ interface ChatMsg {
   text: string;
   type?: "text" | "buttons" | "card" | "success";
   buttons?: Array<{ label: string; value: string }>;
-  card?: { title: string; items: Array<{ name: string; price: string }> };
 }
 
 function InteractiveDemo() {
-  const [messages, setMessages] = useState<ChatMsg[]>([
+  const initialMessages: ChatMsg[] = [
     { id: 0, from: "bot", text: "Привет! 👋 Я бот салона красоты. Чем могу помочь?", type: "buttons",
       buttons: [
         { label: "💅 Записаться", value: "book" },
-        { label: "📋 Наши услуги", value: "services" },
+        { label: "📋 Услуги", value: "services" },
         { label: "📍 Контакты", value: "contacts" },
       ]
     }
-  ]);
+  ];
+  const [messages, setMessages] = useState<ChatMsg[]>(initialMessages);
   const [step, setStep] = useState(0);
   const [typing, setTyping] = useState(false);
   const chatRef = useRef<HTMLDivElement>(null);
 
-  const addBotMsg = useCallback((msg: Omit<ChatMsg, "id" | "from">, delayMs = 800) => {
+  const addBotMsg = useCallback((msg: Omit<ChatMsg, "id" | "from">, delayMs = 700) => {
     setTyping(true);
     setTimeout(() => {
       setTyping(false);
@@ -445,37 +377,24 @@ function InteractiveDemo() {
 
   const handleChoice = useCallback((value: string) => {
     const userText: Record<string, string> = {
-      book: "💅 Записаться", services: "📋 Наши услуги", contacts: "📍 Контакты",
+      book: "💅 Записаться", services: "📋 Услуги", contacts: "📍 Контакты",
       manicure: "Маникюр + покрытие — 8 000 ₸", pedicure: "Педикюр — 6 500 ₸", brows: "Брови — 4 000 ₸",
       time1: "Завтра, 14:00", time2: "Завтра, 16:30", time3: "Послезавтра, 11:00",
-      confirm: "✅ Подтвердить", restart: "🔄 Начать заново",
+      confirm: "✅ Подтвердить", restart: "🔄 Заново",
     };
 
     setMessages(prev => [...prev, { id: prev.length, from: "user", text: userText[value] || value, type: "text" }]);
 
     if (value === "restart") {
       setStep(0);
-      setTimeout(() => {
-        setMessages([{ id: 0, from: "bot", text: "Привет! 👋 Я бот салона красоты. Чем могу помочь?", type: "buttons",
-          buttons: [
-            { label: "💅 Записаться", value: "book" },
-            { label: "📋 Наши услуги", value: "services" },
-            { label: "📍 Контакты", value: "contacts" },
-          ]
-        }]);
-      }, 400);
+      setTimeout(() => setMessages(initialMessages), 300);
       return;
     }
 
     if (value === "services" || value === "book") {
       setStep(1);
       addBotMsg({
-        text: "Выберите услугу:", type: "card",
-        card: { title: "Наши услуги", items: [
-          { name: "Маникюр + покрытие", price: "8 000 ₸" },
-          { name: "Педикюр", price: "6 500 ₸" },
-          { name: "Брови", price: "4 000 ₸" },
-        ]},
+        text: "Выберите услугу:", type: "buttons",
         buttons: [
           { label: "Маникюр — 8 000 ₸", value: "manicure" },
           { label: "Педикюр — 6 500 ₸", value: "pedicure" },
@@ -484,11 +403,11 @@ function InteractiveDemo() {
       });
     } else if (value === "contacts") {
       addBotMsg({ text: "📍 Алматы, ул. Абая 52\n📞 +7 707 123 4567\n🕐 Пн-Сб 9:00–20:00", type: "buttons",
-        buttons: [{ label: "💅 Записаться", value: "book" }, { label: "🔄 Начать заново", value: "restart" }]
+        buttons: [{ label: "💅 Записаться", value: "book" }, { label: "🔄 Заново", value: "restart" }]
       });
     } else if (["manicure", "pedicure", "brows"].includes(value)) {
       setStep(2);
-      addBotMsg({ text: "Выберите удобное время:", type: "buttons",
+      addBotMsg({ text: "Выберите время:", type: "buttons",
         buttons: [
           { label: "Завтра, 14:00", value: "time1" },
           { label: "Завтра, 16:30", value: "time2" },
@@ -498,99 +417,67 @@ function InteractiveDemo() {
     } else if (["time1", "time2", "time3"].includes(value)) {
       setStep(3);
       const timeMap: Record<string, string> = { time1: "завтра в 14:00", time2: "завтра в 16:30", time3: "послезавтра в 11:00" };
-      addBotMsg({ text: `Отлично! Подтвердите запись:\n\n📋 Услуга: ${messages.find(m => m.from === "user" && m.id > 1)?.text?.split("—")[0]?.trim() || "Маникюр"}\n🕐 Время: ${timeMap[value]}\n💰 Стоимость: от 4 000 ₸`, type: "buttons",
+      addBotMsg({ text: `Подтвердите запись:\n\n🕐 ${timeMap[value]}\n💰 от 4 000 ₸`, type: "buttons",
         buttons: [
           { label: "✅ Подтвердить", value: "confirm" },
-          { label: "🔄 Начать заново", value: "restart" },
+          { label: "🔄 Заново", value: "restart" },
         ]
       });
     } else if (value === "confirm") {
       setStep(4);
-      addBotMsg({ text: "✅ Запись подтверждена!\n\nМы отправим напоминание за 2 часа.\nСпасибо, что выбрали нас! 💚", type: "success",
+      addBotMsg({ text: "✅ Запись подтверждена!\n\nНапомним за 2 часа.\nСпасибо! 💚", type: "success",
         buttons: [{ label: "🔄 Попробовать ещё", value: "restart" }]
       });
     }
-  }, [messages, addBotMsg]);
+  }, [addBotMsg]);
 
   return (
-    <section className="py-20 bg-[#080c0c]">
-      <div className="max-w-6xl mx-auto px-6">
-        <FadeIn className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/20 bg-green-500/5 text-green-400 text-sm font-medium mb-4">
+    <section id="demo" className="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50/50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-100/60 text-green-700 text-xs sm:text-sm font-medium mb-4">
             Интерактивное демо
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold">Попробуйте прямо сейчас</h2>
-          <p className="text-gray-400 mt-3 text-lg">Нажимайте кнопки — как будто вы клиент в WhatsApp</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Попробуйте прямо сейчас</h2>
+          <p className="text-slate-500 mt-3 text-base sm:text-lg">Нажимайте кнопки — как клиент в WhatsApp</p>
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <div className="max-w-[440px] mx-auto">
-            {/* Glow */}
+          <div className="max-w-[420px] mx-auto">
             <div className="relative">
-              <div className="absolute -inset-6 bg-green-500/5 rounded-[2rem] blur-2xl" />
-
-              {/* Browser frame */}
-              <div className="relative rounded-2xl border border-white/10 bg-[#0d1117] overflow-hidden shadow-2xl shadow-black/50">
-                {/* Browser bar */}
-                <div className="flex items-center gap-2 px-4 py-2.5 bg-[#161b22] border-b border-white/5">
-                  <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
-                  </div>
-                  <div className="flex-1 mx-8">
-                    <div className="bg-[#0d1117] rounded-lg px-3 py-1 text-[10px] text-gray-500 text-center border border-white/5">
-                      WhatsApp — Салон красоты
-                    </div>
-                  </div>
-                </div>
-
+              <div className="absolute -inset-6 bg-green-400/15 rounded-[2rem] blur-2xl" />
+              <div className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xl shadow-slate-300/40">
                 {/* WhatsApp header */}
-                <div className="bg-[#1f2c33] px-4 py-2.5 flex items-center gap-3 border-b border-white/5">
+                <div className="bg-[#075e54] px-3 sm:px-4 py-2.5 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">S</div>
                   <div className="flex-1">
                     <div className="text-white text-sm font-semibold">Салон Beauty</div>
-                    <div className="text-green-400 text-[10px] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" /> Бот Connect
+                    <div className="text-white/70 text-[10px] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-300" /> Бот Connect
                     </div>
                   </div>
                 </div>
 
-                {/* Chat messages */}
-                <div ref={chatRef} className="h-[400px] overflow-y-auto p-3 space-y-2.5 scroll-smooth" style={{ background: "linear-gradient(180deg, #0b141a 0%, #0a1014 100%)" }}>
+                <div ref={chatRef} className="h-[360px] sm:h-[400px] overflow-y-auto p-3 space-y-2 scroll-smooth bg-[#e5ddd5]">
                   <AnimatePresence>
                     {messages.map((msg) => (
                       <motion.div
                         key={msg.id}
-                        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.97 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                       >
                         {msg.from === "user" ? (
                           <div className="flex justify-end">
-                            <div className="bg-[#005c4b] rounded-2xl rounded-tr-sm px-3.5 py-2 max-w-[80%] text-sm leading-relaxed">
+                            <div className="bg-[#dcf8c6] text-slate-800 rounded-xl rounded-tr-sm px-3 py-2 max-w-[80%] text-sm leading-relaxed shadow-sm">
                               {msg.text}
                             </div>
                           </div>
                         ) : (
                           <div className="space-y-2">
-                            <div className={`rounded-2xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%] text-sm leading-relaxed ${msg.type === "success" ? "bg-green-500/10 border border-green-500/20" : "bg-[#1f2c33]"}`}>
+                            <div className={`rounded-xl rounded-tl-sm px-3 py-2 max-w-[85%] text-sm leading-relaxed shadow-sm ${msg.type === "success" ? "bg-green-100 border border-green-200" : "bg-white"} text-slate-800`}>
                               <div className="whitespace-pre-line">{msg.text}</div>
-
-                              {/* Card with items */}
-                              {msg.card && (
-                                <div className="mt-2 space-y-1">
-                                  {msg.card.items.map((item, j) => (
-                                    <div key={j} className="flex items-center justify-between p-2 rounded-lg bg-white/[0.04] text-xs">
-                                      <span className="text-gray-300">{item.name}</span>
-                                      <span className="text-green-400 font-semibold">{item.price}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
                             </div>
-
-                            {/* Buttons */}
                             {msg.buttons && msg.id === messages[messages.length - 1].id && (
                               <motion.div
                                 initial={{ opacity: 0, y: 6 }}
@@ -604,7 +491,7 @@ function InteractiveDemo() {
                                     whileHover={{ scale: 1.03 }}
                                     whileTap={{ scale: 0.97 }}
                                     onClick={() => handleChoice(btn.value)}
-                                    className="px-3.5 py-2 rounded-xl bg-[#1a2332] border border-white/10 text-xs font-medium text-gray-200 hover:border-green-500/30 hover:bg-green-500/5 hover:text-green-400 transition-all duration-200 cursor-pointer"
+                                    className="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-medium text-slate-700 hover:border-green-500 hover:bg-green-50 hover:text-green-700 transition-all duration-200 shadow-sm"
                                   >
                                     {btn.label}
                                   </motion.button>
@@ -616,12 +503,10 @@ function InteractiveDemo() {
                       </motion.div>
                     ))}
                   </AnimatePresence>
-
-                  {/* Typing indicator */}
                   {typing && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-1 px-4 py-3 bg-[#1f2c33] rounded-2xl rounded-tl-sm w-16">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-1 px-3 py-2.5 bg-white rounded-xl rounded-tl-sm w-14 shadow-sm">
                       {[0, 1, 2].map(i => (
-                        <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-gray-400"
+                        <motion.div key={i} className="w-1.5 h-1.5 rounded-full bg-slate-400"
                           animate={{ y: [0, -4, 0] }}
                           transition={{ duration: 0.5, repeat: Infinity, delay: i * 0.15 }}
                         />
@@ -629,24 +514,14 @@ function InteractiveDemo() {
                     </motion.div>
                   )}
                 </div>
-
-                {/* Input bar */}
-                <div className="px-3 py-2.5 bg-[#1f2c33] border-t border-white/5">
-                  <div className="bg-[#0b141a] rounded-full px-4 py-2.5 flex items-center gap-3 text-xs text-gray-500 border border-white/5">
-                    <span className="text-base">&#128578;</span>
-                    <span className="flex-1 text-gray-600">Выберите кнопку выше...</span>
-                    <span className="text-green-500 text-base">&#127908;</span>
-                  </div>
-                </div>
               </div>
             </div>
 
-            {/* Step indicator */}
-            <div className="flex justify-center gap-2 mt-6">
-              {["Приветствие", "Услуга", "Время", "Подтверждение", "Готово"].map((label, i) => (
+            <div className="flex justify-center gap-2 mt-5 sm:mt-6 flex-wrap">
+              {["Привет", "Услуга", "Время", "Подтв.", "Готово"].map((label, i) => (
                 <div key={i} className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= step ? "bg-green-400 shadow-sm shadow-green-400/50" : "bg-gray-700"}`} />
-                  <span className={`text-[10px] hidden sm:inline transition-colors ${i <= step ? "text-green-400" : "text-gray-600"}`}>{label}</span>
+                  <div className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= step ? "bg-green-500 shadow shadow-green-400/50" : "bg-slate-300"}`} />
+                  <span className={`text-[11px] hidden sm:inline transition-colors ${i <= step ? "text-green-700 font-medium" : "text-slate-400"}`}>{label}</span>
                 </div>
               ))}
             </div>
@@ -658,47 +533,222 @@ function InteractiveDemo() {
 }
 
 // ========================
-// PRICING
+// PRICING (single plan)
 // ========================
 
 function Pricing() {
-  const [annual, setAnnual] = useState(false);
-  const plans = [
-    { name: "Starter", price: annual ? "11 990" : "14 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для начинающих",
-      features: ["1 WhatsApp-номер", "Каталог товаров и услуг", "Запись на приём", "Рассылки", "Антибан-защита", "Поддержка в чате"], cta: "Начать бесплатно", highlighted: false },
-    { name: "Pro", price: annual ? "23 990" : "29 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для растущего бизнеса",
-      features: ["5 WhatsApp-номеров", "Всё из Starter", "AI чат-боты (OpenAI)", "Flow Builder", "Quick Replies", "Приоритетная поддержка"], cta: "Попробовать Pro", highlighted: true },
-    { name: "Business", price: annual ? "47 990" : "59 990", currency: "₸", period: annual ? "/мес (год)" : "/мес", desc: "Для компаний",
-      features: ["20 WhatsApp-номеров", "Всё из Pro", "17+ интеграций", "Команды и роли", "Webhook + RabbitMQ", "Персональный менеджер"], cta: "Связаться", highlighted: false },
-  ];
   return (
-    <section id="pricing" className="py-20">
-      <div className="max-w-6xl mx-auto px-6">
-        <FadeIn className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold">Простые цены</h2>
-          <p className="text-gray-400 mt-3 text-lg mb-6">7 дней бесплатно на любом плане</p>
-          <div className="inline-flex items-center gap-3 bg-white/5 rounded-full p-1">
-            <button onClick={() => setAnnual(false)} className={`px-5 py-2 rounded-full text-sm font-medium transition ${!annual ? "bg-green-500 text-white" : "text-gray-400"}`}>Месяц</button>
-            <button onClick={() => setAnnual(true)} className={`px-5 py-2 rounded-full text-sm font-medium transition ${annual ? "bg-green-500 text-white" : "text-gray-400"}`}>Год (-17%)</button>
+    <section id="pricing" className="py-16 sm:py-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Простая цена</h2>
+          <p className="text-slate-500 mt-3 text-base sm:text-lg">Один тариф. Всё включено. Без скрытых платежей.</p>
+        </FadeIn>
+        <FadeIn delay={0.15}>
+          <div className="relative p-6 sm:p-10 rounded-3xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 glow-green">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-green-600 text-white text-xs font-bold shadow-md">
+              {TRIAL_DAYS} ДНЕЙ БЕСПЛАТНО
+            </div>
+            <div className="text-center mb-6 sm:mb-8 mt-2">
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900">Connect Pro</h3>
+              <p className="text-slate-500 text-sm mt-1">Для малого и среднего бизнеса</p>
+              <div className="mt-5 sm:mt-6 flex items-baseline justify-center gap-2">
+                <span className="text-5xl sm:text-6xl font-extrabold text-slate-900">{PRICE_KZT.toLocaleString("ru-RU")}</span>
+                <span className="text-2xl sm:text-3xl font-bold text-slate-700">₸</span>
+              </div>
+              <div className="text-slate-500 text-sm mt-1">в месяц</div>
+              <div className="mt-3 inline-block px-3 py-1 rounded-full bg-white text-green-700 text-xs font-semibold border border-green-200">
+                −20% при оплате за 3 месяца → 60 000 ₸
+              </div>
+            </div>
+
+            <ul className="grid sm:grid-cols-2 gap-3 mb-7 sm:mb-8">
+              {[
+                "WhatsApp бот с каталогом",
+                "Все диалоги в одном дашборде",
+                "Антибан-защита (5 уровней)",
+                "Авто-теги и сегментация",
+                "Массовые рассылки",
+                "Запись на приём прямо в чате",
+                "AI-бот по вашей базе знаний",
+                "Поддержка 24/7 в Telegram",
+                "Установка и обучение бесплатно",
+                "RU / KZ / EN интерфейс",
+              ].map((f, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                  <span className="text-green-600 font-bold pt-0.5">✓</span>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a href={APP_URL} target="_blank" rel="noopener noreferrer"
+              className="block w-full py-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-center hover:from-green-400 hover:to-green-500 transition shadow-lg shadow-green-500/30">
+              Попробовать бесплатно
+            </a>
+            <div className="text-center text-xs text-slate-400 mt-3">
+              Без карты. Отменить в любой момент.
+            </div>
           </div>
         </FadeIn>
-        <div className="grid md:grid-cols-3 gap-6">
-          {plans.map((p, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <div className={`relative p-8 rounded-3xl border ${p.highlighted ? "border-green-500/30 bg-green-500/5 glow-green" : "border-white/5 bg-[#0d1117]"} flex flex-col h-full`}>
-                {p.highlighted && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-green-500 text-white text-xs font-bold">Популярный</div>}
-                <div className="mb-6"><h3 className="text-xl font-bold">{p.name}</h3><p className="text-gray-500 text-sm mt-1">{p.desc}</p></div>
-                <div className="mb-6"><span className="text-4xl font-extrabold">{p.price} {p.currency}</span><span className="text-gray-500 text-sm">{p.period}</span></div>
-                <ul className="space-y-3 mb-8 flex-1">
-                  {p.features.map((f, j) => <li key={j} className="flex items-center gap-2 text-sm text-gray-300"><span className="text-green-400">&#10003;</span> {f}</li>)}
-                </ul>
-                <button className={`w-full py-3.5 rounded-xl font-semibold text-sm transition ${p.highlighted ? "bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-400 hover:to-green-500 shadow-lg shadow-green-500/20" : "border border-white/10 text-gray-300 hover:bg-white/5"}`}>{p.cta}</button>
+
+        {/* Esep bonus block */}
+        <FadeIn delay={0.3}>
+          <div className="mt-6 sm:mt-8 relative overflow-hidden rounded-3xl bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 border-2 border-amber-300 p-6 sm:p-8">
+            {/* Floating gift emoji */}
+            <div className="absolute -top-4 -right-4 text-7xl opacity-20 rotate-12 select-none">🎁</div>
+
+            <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-5 sm:gap-7 items-center">
+              <div className="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-3xl sm:text-4xl shadow-lg shadow-amber-300/50">
+                🎁
               </div>
-            </FadeIn>
-          ))}
-        </div>
+
+              <div>
+                <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-200/60 text-amber-900 text-[11px] font-bold uppercase tracking-wider mb-2">
+                  Бонус для всех клиентов
+                </div>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-1.5">
+                  Esep — бухгалтерия для ИП в подарок
+                </h3>
+                <p className="text-sm sm:text-base text-slate-700 mb-2 leading-snug">
+                  Расчёт формы 910, ОПВ, СО, ВОСМС, налогов по новому НК&nbsp;2026. Напоминания о дедлайнах. Калькулятор за 30 секунд.
+                </p>
+                <p className="text-xs sm:text-sm text-slate-600">
+                  Стоимость отдельно — <strong className="text-amber-800">{ESEP_VALUE_KZT.toLocaleString("ru-RU")} ₸/мес</strong>. При оплате Connect — <strong className="text-green-700">бесплатно навсегда</strong>.
+                </p>
+              </div>
+
+              <a
+                href={ESEP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white border-2 border-amber-400 text-amber-900 font-semibold text-sm hover:bg-amber-50 hover:border-amber-500 transition whitespace-nowrap shadow-sm"
+              >
+                Что такое Esep →
+              </a>
+            </div>
+
+            {/* What's inside */}
+            <div className="relative mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-amber-200">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-xs sm:text-sm text-slate-700">
+                {[
+                  { icon: "📋", text: "Форма 910" },
+                  { icon: "💰", text: "ОПВ / СО / ВОСМС" },
+                  { icon: "🔔", text: "Напоминания о дедлайнах" },
+                  { icon: "🧮", text: "Калькулятор налогов" },
+                ].map((f, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg">{f.icon}</span>
+                    <span>{f.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
+  );
+}
+
+// ========================
+// LEAD CAPTURE FORM (creates lead in Connect)
+// ========================
+
+function LeadForm() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [businessType, setBusinessType] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !phone.trim()) return;
+    setSubmitting(true);
+    try {
+      const res = await fetch("https://connect.esepkz.com/leads/esep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          phone: phone.replace(/\D+/g, ""),
+          whatsapp: phone.replace(/\D+/g, ""),
+          notes: businessType ? `Из лендинга · ${businessType}` : "Из лендинга",
+          source: "landing",
+          sourceUrl: typeof window !== "undefined" ? window.location.href : "",
+          status: "new",
+        }),
+      });
+      if (!res.ok) throw new Error("submit failed");
+      setDone(true);
+    } catch {
+      // Fallback: open WhatsApp
+      const text = encodeURIComponent(
+        `Здравствуйте! Меня зовут ${name}, хочу подключить Connect для ${businessType || "моего бизнеса"}. Телефон: ${phone}`,
+      );
+      window.open(`https://wa.me/${SUPPORT_WA}?text=${text}`, "_blank");
+      setDone(true);
+    }
+    setSubmitting(false);
+  };
+
+  if (done) {
+    return (
+      <div className="p-8 rounded-3xl bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 text-center">
+        <div className="text-5xl mb-3">✅</div>
+        <h3 className="text-2xl font-bold text-slate-900 mb-2">Заявка принята!</h3>
+        <p className="text-slate-600">Свяжемся в WhatsApp в течение 1 часа.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 card-soft space-y-4">
+      <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Имя</label>
+        <input
+          required type="text" value={name} onChange={(e) => setName(e.target.value)}
+          placeholder="Ваше имя"
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition text-slate-900"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">WhatsApp / телефон</label>
+        <input
+          required type="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
+          placeholder="+7 707 ..."
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition text-slate-900"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Тип бизнеса</label>
+        <select
+          value={businessType} onChange={(e) => setBusinessType(e.target.value)}
+          className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition text-slate-900"
+        >
+          <option value="">Выберите</option>
+          <option>Салон красоты</option>
+          <option>Кофейня / ресторан</option>
+          <option>Доставка цветов</option>
+          <option>Доставка еды</option>
+          <option>Детский центр</option>
+          <option>Курсы / школа</option>
+          <option>Фитнес / спа</option>
+          <option>Магазин / интернет-магазин</option>
+          <option>Другое</option>
+        </select>
+      </div>
+      <button
+        type="submit" disabled={submitting || !name.trim() || !phone.trim()}
+        className="w-full py-3.5 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold hover:from-green-400 hover:to-green-500 transition shadow-md shadow-green-500/25 disabled:opacity-50"
+      >
+        {submitting ? "Отправляем..." : "Получить демо в WhatsApp"}
+      </button>
+      <p className="text-xs text-slate-400 text-center">
+        Перезвоним в течение 1 часа. Ничего не платите.
+      </p>
+    </form>
   );
 }
 
@@ -707,28 +757,46 @@ function Pricing() {
 // ========================
 
 function FAQ() {
-  const [open, setOpen] = useState<number | null>(null);
+  const [open, setOpen] = useState<number | null>(0);
   const faqs = [
-    { q: "Что такое Connect?", a: "Connect — платформа для бизнеса в WhatsApp. Каталог товаров, запись на приём, рассылки, чат-боты и аналитика — всё в одном дашборде." },
-    { q: "Могут ли забанить мой номер?", a: "Connect имеет 5-уровневую антибан-систему: очередь сообщений, рандомизированные задержки, 14-дневный warmup, health monitor и anti-spam детектор." },
-    { q: "Какие способы подключения?", a: "Два канала: Free Channel (бесплатный, через QR-код) и Business Channel (официальный Meta Business API)." },
-    { q: "Работает ли с Казахстаном?", a: "Да! Полная локализация на казахский и русский, поддержка тенге, часовой пояс Asia/Almaty." },
-    { q: "Есть ли бесплатный период?", a: "Да, 7 дней бесплатно на любом плане. Никаких ограничений." },
-    { q: "Чем отличается от WATI и AISAR?", a: "Антибан (только у нас), каталог бесплатно (WATI берёт $100), 17+ интеграций, flow builder и AI-боты включены." },
+    { q: "Что входит в 25 000 ₸?", a: "Полный доступ ко всем функциям Connect: каталог, рассылки, AI-бот, антибан, CRM лидов, расписание, аналитика. Один WhatsApp-номер. Установка и обучение бесплатно. Поддержка 24/7. Плюс — Esep бесплатно (бухгалтерия для ИП, отдельно стоит 14 990 ₸/мес)." },
+    { q: "Что такое Esep и почему он бесплатно?", a: "Esep — это наше второе приложение для ИП Казахстана. Считает форму 910, ОПВ, СО, ВОСМС, налоги по новому НК 2026 за 1 минуту. Мы дарим Esep всем клиентам Connect — экономите ещё 14 990 ₸/мес. Подробнее на esepkz.com." },
+    { q: "Могут ли забанить мой номер WhatsApp?", a: "У нас 5-уровневая антибан-система: warmup (14 дней постепенного разгона), очередь сообщений с рандом-задержками 30-90 сек, лимит 12/мин, эмуляция набора, auto-slowdown при rate-limit. С нашими настройками риск минимальный." },
+    { q: "Сколько занимает подключение?", a: "От 2 минут — отсканировать QR с телефона. Установку и базовую настройку мы делаем за вас бесплатно — обычно за час." },
+    { q: "Можно использовать существующий номер?", a: "Да. Connect работает с любым WhatsApp-аккаунтом. Подключение через QR — как WhatsApp Web." },
+    { q: "Подходит ли для салонов / кофеен / доставки?", a: "Да. Это наша основная аудитория. У нас готовые шаблоны каталога и сценариев записи. За 1-2 дня запустим под ваш бизнес." },
+    { q: "Что если не подойдёт?", a: "Первая неделя бесплатно. Если не подойдёт — просто не платите. Без бюрократии." },
   ];
   return (
-    <section id="faq" className="py-20 bg-[#080c0c]">
-      <div className="max-w-3xl mx-auto px-6">
-        <FadeIn className="text-center mb-12"><h2 className="text-3xl md:text-4xl font-extrabold">Частые вопросы</h2></FadeIn>
+    <section id="faq" className="py-16 sm:py-20 bg-white border-y border-slate-200">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Частые вопросы</h2>
+        </FadeIn>
         <div className="space-y-3">
           {faqs.map((f, i) => (
-            <FadeIn key={i} delay={i * 0.05}>
-              <div className="rounded-2xl border border-white/5 overflow-hidden">
-                <button className="w-full p-5 flex items-center justify-between text-left hover:bg-white/[0.02] transition" onClick={() => setOpen(open === i ? null : i)}>
-                  <span className="font-semibold pr-4">{f.q}</span>
-                  <span className={`text-gray-500 transition-transform ${open === i ? "rotate-180" : ""}`}>&#9660;</span>
+            <FadeIn key={i} delay={i * 0.04}>
+              <div className="rounded-2xl border border-slate-200 overflow-hidden bg-white">
+                <button
+                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50 transition"
+                  onClick={() => setOpen(open === i ? null : i)}
+                >
+                  <span className="font-semibold text-slate-900 pr-4 text-sm sm:text-base">{f.q}</span>
+                  <span className={`text-slate-400 transition-transform ${open === i ? "rotate-180" : ""}`}>▼</span>
                 </button>
-                {open === i && <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="px-5 pb-5 text-gray-400 text-sm leading-relaxed">{f.a}</motion.div>}
+                <AnimatePresence>
+                  {open === i && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="px-4 sm:px-5 pb-5 text-slate-600 text-sm leading-relaxed"
+                    >
+                      {f.a}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </FadeIn>
           ))}
@@ -739,38 +807,69 @@ function FAQ() {
 }
 
 // ========================
-// FINAL CTA + FOOTER
+// FINAL CTA + LEAD FORM
 // ========================
 
 function FinalCTA() {
   return (
-    <section className="py-20">
-      <div className="max-w-4xl mx-auto px-6">
+    <section className="py-16 sm:py-20 bg-gradient-to-br from-slate-50 to-green-50/50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <FadeIn>
-          <div className="relative p-12 md:p-16 rounded-3xl bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20 text-center glow-green">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">Готовы продавать через WhatsApp?</h2>
-            <p className="text-gray-400 text-lg mb-8 max-w-xl mx-auto">Подключите Connect за 2 минуты. 7 дней бесплатно, без карты.</p>
-            <a href="#pricing" className="inline-flex px-10 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-xl shadow-green-500/25">Начать бесплатно</a>
+          <h2 className="text-3xl sm:text-4xl font-extrabold mb-4 sm:mb-5 text-slate-900">
+            Готовы продавать через WhatsApp?
+          </h2>
+          <p className="text-slate-600 text-base sm:text-lg mb-6 leading-relaxed">
+            Оставьте заявку — свяжемся в WhatsApp в течение часа, покажем демо и подключим бесплатно на 7 дней.
+          </p>
+          <div className="space-y-3">
+            {[
+              { icon: "✓", text: "Без карты, без обязательств" },
+              { icon: "✓", text: "Установка и обучение бесплатно" },
+              { icon: "✓", text: "Поддержка 24/7 в Telegram" },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 text-slate-700">
+                <span className="w-6 h-6 rounded-full bg-green-100 text-green-700 flex items-center justify-center text-sm font-bold">{item.icon}</span>
+                <span className="text-sm sm:text-base">{item.text}</span>
+              </div>
+            ))}
           </div>
+        </FadeIn>
+        <FadeIn delay={0.15}>
+          <LeadForm />
         </FadeIn>
       </div>
     </section>
   );
 }
 
+// ========================
+// FOOTER
+// ========================
+
 function Footer() {
   return (
-    <footer className="border-t border-white/5 py-12">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-bold text-xs">C</div>
-          <span className="font-bold">Connect</span>
-          <span className="text-gray-600 text-sm ml-2">&copy; 2026</span>
-        </div>
-        <div className="flex items-center gap-6 text-sm text-gray-500">
-          <a href="#features" className="hover:text-white transition">Возможности</a>
-          <a href="#pricing" className="hover:text-white transition">Цены</a>
-          <a href="#faq" className="hover:text-white transition">FAQ</a>
+    <footer className="bg-white border-t border-slate-200 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-bold text-xs">C</div>
+            <span className="font-bold text-slate-900">Connect</span>
+            <span className="text-slate-400 text-sm ml-2">© 2026</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
+            <a href="#features" className="hover:text-slate-900 transition">Возможности</a>
+            <a href="#pricing" className="hover:text-slate-900 transition">Цена</a>
+            <a href="#faq" className="hover:text-slate-900 transition">FAQ</a>
+            <a href={`https://wa.me/${SUPPORT_WA}`} target="_blank" rel="noopener noreferrer" className="hover:text-green-600 transition">
+              WhatsApp
+            </a>
+            <a href="https://t.me/esep_kz_bot" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 transition">
+              Telegram
+            </a>
+            <a href="mailto:hello@esepkz.com" className="hover:text-green-600 transition">
+              hello@esepkz.com
+            </a>
+          </div>
         </div>
       </div>
     </footer>
