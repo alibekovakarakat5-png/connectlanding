@@ -227,24 +227,13 @@ function CenterPulse() {
 
 function Hero() {
   return (
-    <section className="relative pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-grid isolate">
-      {/* Background green tint — only on the SIDES so it never washes out the centered text/CTAs. */}
-      <div
-        className="absolute inset-0 pointer-events-none -z-10"
-        aria-hidden="true"
-        style={{
-          // Two soft green spots in the top corners + bottom band, with the
-          // CENTER kept transparent so the title and buttons stay punchy.
-          background:
-            "radial-gradient(circle 600px at 12% 18%, rgba(134, 239, 172, 0.40), transparent 70%), " +
-            "radial-gradient(circle 600px at 88% 22%, rgba(110, 231, 183, 0.35), transparent 70%), " +
-            "linear-gradient(180deg, transparent 50%, rgba(187, 247, 208, 0.22) 100%)",
-        }}
-      />
+    <section className="relative pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden isolate">
+      {/* Decorative dot grid — kept on its OWN absolute layer so its
+          mask-image (which fades the bottom to transparent) doesn't
+          accidentally fade the title and buttons too. */}
+      <div className="absolute inset-0 bg-grid pointer-events-none -z-10" aria-hidden="true" />
 
-      {/* Floating chat bubbles in the corners. Pulse rings removed — they
-          were drawing animated circles right over the CTA buttons and made
-          them look washed out. */}
+      {/* Floating chat bubbles in the corners. */}
       <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 pointer-events-none">
         <FloatingMessages />
       </div>
@@ -272,24 +261,23 @@ function Hero() {
           </p>
         </FadeIn>
 
-        <FadeIn delay={0.3}>
-          <div className="relative z-20 flex flex-col sm:flex-row gap-3 justify-center">
-            <a
-              href={APP_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl bg-green-600 text-white font-bold text-base sm:text-lg hover:bg-green-500 hover:scale-[1.02] transition-all shadow-lg shadow-green-600/30 text-center"
-            >
-              Начать бесплатно — {TRIAL_DAYS} дней
-            </a>
-            <a
-              href="#demo"
-              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl border-2 border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50 hover:border-slate-400 transition text-center"
-            >
-              Посмотреть демо ↓
-            </a>
-          </div>
-        </FadeIn>
+        {/* CTAs — NO FadeIn wrapper. Static, fully opaque, on top of everything. */}
+        <div className="relative z-20 mt-2 flex flex-col sm:flex-row gap-3 justify-center">
+          <a
+            href={APP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl bg-green-600 text-white font-bold text-base sm:text-lg hover:bg-green-500 hover:-translate-y-0.5 transition-colors transition-transform text-center shadow-md"
+          >
+            Начать бесплатно — {TRIAL_DAYS} дней
+          </a>
+          <a
+            href="#demo"
+            className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl border-2 border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-100 hover:border-slate-400 transition-colors text-center shadow-sm"
+          >
+            Посмотреть демо ↓
+          </a>
+        </div>
 
         <FadeIn delay={0.4}>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-7 sm:mt-9 text-xs sm:text-sm text-slate-500">
