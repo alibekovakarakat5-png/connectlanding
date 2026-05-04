@@ -227,17 +227,29 @@ function CenterPulse() {
 
 function Hero() {
   return (
-    <section className="relative pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-grid">
-      {/* Soft green halo behind everything */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] max-w-[140%] h-[700px] bg-green-300/25 rounded-full blur-[140px] pointer-events-none" />
+    <section className="relative pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-grid isolate">
+      {/* Background green tint — only on the SIDES so it never washes out the centered text/CTAs. */}
+      <div
+        className="absolute inset-0 pointer-events-none -z-10"
+        aria-hidden="true"
+        style={{
+          // Two soft green spots in the top corners + bottom band, with the
+          // CENTER kept transparent so the title and buttons stay punchy.
+          background:
+            "radial-gradient(circle 600px at 12% 18%, rgba(134, 239, 172, 0.40), transparent 70%), " +
+            "radial-gradient(circle 600px at 88% 22%, rgba(110, 231, 183, 0.35), transparent 70%), " +
+            "linear-gradient(180deg, transparent 50%, rgba(187, 247, 208, 0.22) 100%)",
+        }}
+      />
 
-      {/* Live floating chat bubbles around the centered content */}
+      {/* Floating chat bubbles in the corners. Pulse rings removed — they
+          were drawing animated circles right over the CTA buttons and made
+          them look washed out. */}
       <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 pointer-events-none">
         <FloatingMessages />
-        <CenterPulse />
       </div>
 
-      {/* Centered hero copy */}
+      {/* Centered hero copy — sits on top, fully opaque */}
       <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center z-10">
         <FadeIn>
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-green-500/30 bg-white/70 backdrop-blur-sm text-green-700 text-xs sm:text-sm font-semibold mb-6 shadow-sm">
@@ -261,18 +273,18 @@ function Hero() {
         </FadeIn>
 
         <FadeIn delay={0.3}>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="relative z-20 flex flex-col sm:flex-row gap-3 justify-center">
             <a
               href={APP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-base sm:text-lg hover:from-green-400 hover:to-green-500 hover:scale-[1.02] transition-all shadow-2xl shadow-green-500/40 text-center"
+              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl bg-green-600 text-white font-bold text-base sm:text-lg hover:bg-green-500 hover:scale-[1.02] transition-all shadow-lg shadow-green-600/30 text-center"
             >
               Начать бесплатно — {TRIAL_DAYS} дней
             </a>
             <a
               href="#demo"
-              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl border border-slate-300 bg-white/80 backdrop-blur text-slate-800 font-semibold hover:bg-white hover:border-slate-400 transition text-center"
+              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl border-2 border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50 hover:border-slate-400 transition text-center"
             >
               Посмотреть демо ↓
             </a>
