@@ -39,11 +39,13 @@ body {
   background-clip: text;
 }
 
+/* Soft dot grid — barely visible, just adds depth */
 .bg-grid {
-  background-image:
-    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-  background-size: 64px 64px;
+  background-image: radial-gradient(circle, rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+  background-size: 28px 28px;
+  background-position: 0 0;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, #000 0%, transparent 75%);
 }
 
 /* Soft shadows for cards */

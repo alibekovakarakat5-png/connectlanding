@@ -110,100 +110,202 @@ function Navbar() {
 }
 
 // ========================
+// FLOATING MESSAGES — клиенты "пишут" со всех сторон вокруг hero
+// Effect: bubbles fade in, drift up, fade out — looks like incoming chats live
+// ========================
+
+interface FloatingMsg {
+  text: string;
+  who: string;
+  who_color: string;
+  // % positions (responsive friendly)
+  top: string;
+  side: "left" | "right";
+  offset: string;
+  delay: number;
+  duration: number;
+}
+
+// Bubbles only at top + bottom — far from the centered title.
+// Each one fades in, drifts up, fades out — gives a "live messages" feel.
+const FLOATING_MESSAGES: FloatingMsg[] = [
+  // Top corners
+  { text: "Запишите на завтра 🙂",                       who: "Айгуль", who_color: "from-pink-400 to-rose-400",      top: "12%", side: "left",  offset: "1.5%",  delay: 0,    duration: 9 },
+  { text: "Сколько стоит маникюр?",                      who: "Болат",  who_color: "from-blue-400 to-indigo-400",    top: "10%", side: "right", offset: "1.5%",  delay: 1.5,  duration: 9 },
+  { text: "Можно фото букета? 🌸",                       who: "Алия",   who_color: "from-amber-400 to-orange-400",   top: "26%", side: "left",  offset: "0.5%",  delay: 3,    duration: 9 },
+  { text: "Когда акция на ресницы?",                     who: "Жанар",  who_color: "from-emerald-400 to-teal-400",   top: "24%", side: "right", offset: "0.5%",  delay: 4.5,  duration: 9 },
+
+  // Bottom corners
+  { text: "Принимаете заказ на ДР?",                     who: "Дина",   who_color: "from-purple-400 to-fuchsia-400", top: "75%", side: "left",  offset: "1%",    delay: 6,    duration: 9 },
+  { text: "Спасибо! Заказ оформила ✅",                   who: "Адиль",  who_color: "from-cyan-400 to-sky-400",       top: "78%", side: "right", offset: "1%",    delay: 7.5,  duration: 9 },
+];
+
+function FloatingMessageBubble({ msg }: { msg: FloatingMsg }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30, scale: 0.85 }}
+      animate={{
+        opacity: [0, 0.95, 0.95, 0],
+        y: [30, 0, -10, -40],
+        scale: [0.85, 1, 1, 0.92],
+      }}
+      transition={{
+        duration: msg.duration,
+        delay: msg.delay,
+        repeat: Infinity,
+        repeatDelay: 8,
+        times: [0, 0.15, 0.85, 1],
+        ease: "easeInOut",
+      }}
+      style={{
+        position: "absolute",
+        top: msg.top,
+        [msg.side]: msg.offset,
+      }}
+      className="hidden lg:flex items-start gap-2 w-[230px] z-0 pointer-events-none"
+    >
+      {msg.side === "left" && (
+        <div className={`flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br ${msg.who_color} flex items-center justify-center text-white text-xs font-bold shadow-md`}>
+          {msg.who[0]}
+        </div>
+      )}
+      <div
+        className={`bg-white rounded-2xl ${msg.side === "left" ? "rounded-tl-sm" : "rounded-tr-sm"} px-3.5 py-2.5 shadow-lg shadow-slate-300/40 border border-slate-100`}
+      >
+        <div className="text-[10px] font-bold text-slate-400 mb-0.5">{msg.who}</div>
+        <div className="text-xs sm:text-sm text-slate-700 leading-snug">{msg.text}</div>
+      </div>
+      {msg.side === "right" && (
+        <div className={`flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br ${msg.who_color} flex items-center justify-center text-white text-xs font-bold shadow-md`}>
+          {msg.who[0]}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+function FloatingMessages() {
+  return (
+    <>
+      {FLOATING_MESSAGES.map((m, i) => (
+        <FloatingMessageBubble key={i} msg={m} />
+      ))}
+    </>
+  );
+}
+
+// Center "command center" pulse — visualises bot answering all incoming chats
+function CenterPulse() {
+  return (
+    <div className="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
+      {/* Pulse rings */}
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-green-400/40"
+          initial={{ width: 80, height: 80, opacity: 0 }}
+          animate={{
+            width: [80, 480],
+            height: [80, 480],
+            opacity: [0.5, 0],
+          }}
+          transition={{
+            duration: 4,
+            delay: i * 1.2,
+            repeat: Infinity,
+            ease: "easeOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ========================
 // HERO
 // ========================
 
 function Hero() {
   return (
-    <section className="relative pt-20 sm:pt-28 pb-12 sm:pb-20 overflow-hidden bg-grid">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[400px] sm:h-[600px] bg-green-300/30 rounded-full blur-[120px]" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 items-center gap-10 lg:gap-16">
-        <div className="text-center lg:text-left order-1">
-          <FadeIn>
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-green-500/20 bg-green-500/10 text-green-700 text-xs sm:text-sm font-medium mb-5 sm:mb-6">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-              WhatsApp CRM для бизнеса Казахстана
-            </div>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-5 sm:mb-6 text-slate-900">
-              Продавайте в<span className="text-gradient"> WhatsApp</span><br className="hidden sm:block" /> на автопилоте
-            </h1>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 mb-7 sm:mb-8 leading-relaxed">
-              Каталог, заказы, рассылки и AI-бот в одном дашборде. Защита от банов WhatsApp. Подключение за 2 минуты.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.3}>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-              <a href={APP_URL} target="_blank" rel="noopener noreferrer"
-                className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-base sm:text-lg hover:from-green-400 hover:to-green-500 transition-all shadow-xl shadow-green-500/30 text-center">
-                Начать бесплатно — {TRIAL_DAYS} дней
-              </a>
-              <a href="#demo"
-                className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl border border-slate-300 text-slate-700 font-semibold hover:bg-white hover:border-slate-400 transition text-center">
-                Посмотреть демо ↓
-              </a>
-            </div>
-          </FadeIn>
-          <FadeIn delay={0.4}>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-8 sm:mt-10 justify-center lg:justify-start text-xs sm:text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <span className="text-green-600 text-base">✓</span> Без карты
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-600 text-base">✓</span> Установка бесплатно
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-green-600 text-base">✓</span> Поддержка 24/7
-              </div>
-            </div>
-          </FadeIn>
+    <section className="relative pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-hidden bg-grid">
+      {/* Soft green halo behind everything */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] max-w-[140%] h-[700px] bg-green-300/25 rounded-full blur-[140px] pointer-events-none" />
 
-          {/* Esep bonus badge */}
-          <FadeIn delay={0.5}>
-            <a
-              href="#pricing"
-              className="mt-6 sm:mt-8 inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-300 text-slate-800 hover:from-amber-100 hover:to-yellow-100 transition group"
-            >
-              <span className="text-2xl">🎁</span>
-              <span className="text-xs sm:text-sm">
-                <strong className="text-amber-700">Бонус:</strong> при покупке тарифа — <strong>Esep в подарок</strong> (бухгалтерия для ИП, ценность {ESEP_VALUE_KZT.toLocaleString("ru-RU")} ₸/мес)
-                <span className="ml-1 text-amber-700 group-hover:underline">подробнее →</span>
-              </span>
-            </a>
-          </FadeIn>
-        </div>
+      {/* Live floating chat bubbles around the centered content */}
+      <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 pointer-events-none">
+        <FloatingMessages />
+        <CenterPulse />
+      </div>
 
-        {/* Hero visual: Remotion-rendered intro video */}
-        <FadeIn delay={0.3} className="order-2 flex justify-center">
-          <div className="relative w-full max-w-[520px]">
-            <div className="absolute -inset-4 bg-green-400/20 rounded-3xl blur-2xl" />
-            <div className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xl shadow-slate-300/50">
-              <video
-                className="w-full aspect-video object-cover bg-slate-100"
-                autoPlay
-                muted
-                loop
-                playsInline
-                poster="/connect-intro-poster.jpg"
-              >
-                <source src="/connect-intro.mp4" type="video/mp4" />
-              </video>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
-                className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-white/95 backdrop-blur border border-green-500/30 shadow-lg"
-              >
-                <div className="text-[10px] text-slate-500">Антибан</div>
-                <div className="text-green-600 font-bold text-xs flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Активна
-                </div>
-              </motion.div>
-            </div>
+      {/* Centered hero copy */}
+      <div className="relative max-w-3xl mx-auto px-4 sm:px-6 text-center z-10">
+        <FadeIn>
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-green-500/30 bg-white/70 backdrop-blur-sm text-green-700 text-xs sm:text-sm font-semibold mb-6 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            WhatsApp CRM для бизнеса Казахстана
           </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.05] mb-5 sm:mb-7 text-slate-900">
+            Продавайте в<br className="sm:hidden" /> <span className="text-gradient">WhatsApp</span>
+            <br /> на автопилоте
+          </h1>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <p className="text-base sm:text-lg lg:text-xl text-slate-600 max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            Каталог, заказы, рассылки и AI-бот в одном дашборде.<br className="hidden sm:block" />
+            Защита от банов. Подключение за <strong className="text-slate-900">2 минуты</strong>.
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={0.3}>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <a
+              href={APP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-green-500 to-green-600 text-white font-bold text-base sm:text-lg hover:from-green-400 hover:to-green-500 hover:scale-[1.02] transition-all shadow-2xl shadow-green-500/40 text-center"
+            >
+              Начать бесплатно — {TRIAL_DAYS} дней
+            </a>
+            <a
+              href="#demo"
+              className="px-7 sm:px-9 py-4 sm:py-5 rounded-2xl border border-slate-300 bg-white/80 backdrop-blur text-slate-800 font-semibold hover:bg-white hover:border-slate-400 transition text-center"
+            >
+              Посмотреть демо ↓
+            </a>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.4}>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-7 sm:mt-9 text-xs sm:text-sm text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <span className="text-green-600 text-base">✓</span> Без карты
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-green-600 text-base">✓</span> Установка бесплатно
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="text-green-600 text-base">✓</span> Поддержка 24/7
+            </span>
+          </div>
+        </FadeIn>
+
+        {/* Esep bonus badge */}
+        <FadeIn delay={0.5}>
+          <a
+            href="#pricing"
+            className="mt-7 sm:mt-8 inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-300 text-slate-800 hover:from-amber-100 hover:to-yellow-100 hover:scale-[1.01] transition group shadow-md shadow-amber-200/30"
+          >
+            <span className="text-2xl">🎁</span>
+            <span className="text-xs sm:text-sm">
+              <strong className="text-amber-700">Бонус:</strong> при покупке —{" "}
+              <strong>Esep в подарок</strong> ({ESEP_VALUE_KZT.toLocaleString("ru-RU")} ₸/мес)
+              <span className="ml-1 text-amber-700 group-hover:underline">подробнее →</span>
+            </span>
+          </a>
         </FadeIn>
       </div>
     </section>
@@ -273,35 +375,293 @@ function Problem() {
 // HOW IT WORKS
 // ========================
 
-function HowItWorks() {
-  const steps = [
-    { num: "01", title: "Регистрация", desc: "Email + пароль. 10 секунд.", icon: "👤" },
-    { num: "02", title: "QR-код", desc: "Сканируете телефоном — WhatsApp подключён.", icon: "📱" },
-    { num: "03", title: "Запуск", desc: "Добавьте товары, включите бота, шлите рассылки.", icon: "🚀" },
-  ];
+// ========================
+// FLOW BUILDER PREVIEW — drag-drop style canvas with connected nodes.
+// Replaces the boring 3-card "Старт за 2 минуты". This is the wow-feature
+// that says: "you can build your own salesperson visually, like n8n / Zapier".
+// ========================
+
+interface FlowNode {
+  id: string;
+  icon: string;
+  title: string;
+  subtitle: string;
+  // grid position on a 6-col x 3-row layout
+  col: number;
+  row: number;
+  color: string; // Tailwind gradient color stops, e.g. "from-blue-400 to-blue-600"
+  details: { title: string; items: string[] };
+}
+
+const FLOW_NODES: FlowNode[] = [
+  {
+    id: "n1",
+    icon: "📩",
+    title: "Клиент пишет",
+    subtitle: "Любое сообщение в WA",
+    col: 1, row: 1,
+    color: "from-slate-500 to-slate-700",
+    details: {
+      title: "Триггер: новое сообщение",
+      items: ["Запускается на любое входящее", "Поддержка текста, фото, голоса", "Ловит даже emoji-реакции"],
+    },
+  },
+  {
+    id: "n2",
+    icon: "🤖",
+    title: "AI-бот распознаёт",
+    subtitle: "Намерение клиента",
+    col: 2, row: 1,
+    color: "from-emerald-400 to-emerald-600",
+    details: {
+      title: "AI-роутер по базе знаний",
+      items: ["GPT определяет: запись / каталог / вопрос / жалоба", "Можно добавить кастомные категории", "Точность ~95%"],
+    },
+  },
+  {
+    id: "n3",
+    icon: "📋",
+    title: "Каталог",
+    subtitle: "Бот шлёт товары",
+    col: 3, row: 1,
+    color: "from-blue-400 to-blue-600",
+    details: {
+      title: "Карточки товаров с кнопками",
+      items: ["Фото + название + цена", "Inline-кнопка «В корзину»", "Категории: розы / торты / завтраки…"],
+    },
+  },
+  {
+    id: "n4",
+    icon: "🛒",
+    title: "Корзина",
+    subtitle: "Сборка заказа",
+    col: 4, row: 1,
+    color: "from-purple-400 to-purple-600",
+    details: {
+      title: "Накопление позиций",
+      items: ["Можно править количество", "Промокоды и скидки", "Auto-расчёт доставки"],
+    },
+  },
+  {
+    id: "n5",
+    icon: "🚚",
+    title: "Адрес + время",
+    subtitle: "Сбор данных",
+    col: 5, row: 1,
+    color: "from-amber-400 to-orange-500",
+    details: {
+      title: "Структурный сбор",
+      items: ["Адрес доставки (геопозиция)", "Имя получателя", "Текст открытки"],
+    },
+  },
+  {
+    id: "n6",
+    icon: "✅",
+    title: "Заказ в дашборде",
+    subtitle: "Курьеру / тебе",
+    col: 6, row: 1,
+    color: "from-green-500 to-emerald-700",
+    details: {
+      title: "Уведомление + запись",
+      items: ["Карточка в /orders", "Push в Telegram владельцу", "WhatsApp-подтверждение клиенту"],
+    },
+  },
+];
+
+function FlowBuilder() {
+  const [selected, setSelected] = useState<string>("n3"); // default: catalog
+  const node = FLOW_NODES.find((n) => n.id === selected)!;
+
   return (
-    <section id="how" className="py-16 sm:py-20 bg-white border-y border-slate-200">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <FadeIn className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Старт за 2 минуты</h2>
-          <p className="text-slate-500 mt-3 text-base sm:text-lg">Три шага до продаж в WhatsApp</p>
+    <section id="how" className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 to-white border-y border-slate-200 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm font-bold uppercase tracking-wider mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Конструктор без кода
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+            Соберите своего <span className="text-gradient">бота-продажника</span><br className="hidden sm:block" /> за пару минут
+          </h2>
+          <p className="text-slate-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            Перетягиваете блоки → соединяете линиями → готов сценарий продаж. Без программистов.
+          </p>
         </FadeIn>
-        <div className="grid md:grid-cols-3 gap-5 sm:gap-8">
-          {steps.map((s, i) => (
-            <FadeIn key={i} delay={i * 0.12}>
-              <div className="relative p-6 sm:p-8 rounded-3xl border border-slate-200 bg-white card-soft transition group">
-                <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">{s.icon}</div>
-                <div className="text-green-600 font-mono text-sm mb-2">{s.num}</div>
-                <h3 className="text-lg sm:text-xl font-bold mb-2 text-slate-900">{s.title}</h3>
-                <p className="text-slate-500 text-sm sm:text-base">{s.desc}</p>
+
+        {/* The flow canvas */}
+        <FadeIn delay={0.15}>
+          <div className="relative rounded-3xl border-2 border-slate-200 bg-white shadow-xl shadow-slate-200/50 overflow-hidden">
+            {/* Toolbar like a real builder */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
+              <div className="flex items-center gap-2">
+                <div className="flex gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                </div>
+                <div className="ml-3 text-xs text-slate-500 font-medium">Цветочный магазин · сценарий «Заказ букета»</div>
               </div>
-            </FadeIn>
-          ))}
-        </div>
+              <div className="hidden sm:flex items-center gap-2 text-xs">
+                <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">● Активен</span>
+                <span className="text-slate-400">·</span>
+                <span className="text-slate-500">12 заказов сегодня</span>
+              </div>
+            </div>
+
+            {/* Canvas with grid background and nodes */}
+            <div
+              className="relative px-4 sm:px-8 py-10 sm:py-14"
+              style={{
+                backgroundImage: "radial-gradient(circle, rgba(15,23,42,0.06) 1px, transparent 1px)",
+                backgroundSize: "20px 20px",
+              }}
+            >
+              {/* SVG connectors between nodes */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none">
+                {FLOW_NODES.slice(0, -1).map((n, i) => {
+                  const next = FLOW_NODES[i + 1];
+                  // 6 nodes evenly spaced — % positions
+                  const x1 = ((n.col - 0.5) / 6) * 100;
+                  const x2 = ((next.col - 0.5) / 6) * 100;
+                  return (
+                    <g key={i}>
+                      <line
+                        x1={`${x1}%`} y1="50%"
+                        x2={`${x2}%`} y2="50%"
+                        stroke="#94a3b8"
+                        strokeWidth="2"
+                        strokeDasharray="6 4"
+                      />
+                      {/* Animated dot traveling along */}
+                      <motion.circle
+                        r="3.5"
+                        fill="#22c55e"
+                        initial={{ cx: `${x1}%` }}
+                        animate={{ cx: [`${x1}%`, `${x2}%`] }}
+                        transition={{ duration: 1.6, repeat: Infinity, repeatDelay: i * 0.4, ease: "easeInOut" }}
+                        cy="50%"
+                      />
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Nodes */}
+              <div className="relative grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-2">
+                {FLOW_NODES.map((n, i) => {
+                  const isActive = selected === n.id;
+                  return (
+                    <motion.button
+                      key={n.id}
+                      type="button"
+                      onClick={() => setSelected(n.id)}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.97 }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + i * 0.1, duration: 0.4 }}
+                      className={`relative z-10 rounded-2xl border-2 p-3 sm:p-4 text-left bg-white transition-all
+                        ${isActive
+                          ? "border-emerald-500 shadow-xl shadow-emerald-200/50"
+                          : "border-slate-200 hover:border-emerald-300 shadow-md"}`}
+                    >
+                      <div className={`inline-flex w-9 h-9 sm:w-10 sm:h-10 rounded-xl items-center justify-center text-lg sm:text-xl bg-gradient-to-br ${n.color} text-white shadow-sm mb-2`}>
+                        {n.icon}
+                      </div>
+                      <div className="text-[10px] sm:text-xs text-slate-400 font-mono uppercase tracking-wider">
+                        Шаг {i + 1}
+                      </div>
+                      <div className="font-bold text-sm sm:text-base text-slate-900 leading-tight mt-0.5">
+                        {n.title}
+                      </div>
+                      <div className="text-[10px] sm:text-xs text-slate-500 mt-1 hidden sm:block">
+                        {n.subtitle}
+                      </div>
+                      {isActive && (
+                        <motion.div
+                          layoutId="flow-arrow"
+                          className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45 bg-emerald-500"
+                        />
+                      )}
+                    </motion.button>
+                  );
+                })}
+              </div>
+
+              {/* Node detail card — shows on click */}
+              <motion.div
+                key={node.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="mt-10 mx-auto max-w-2xl rounded-2xl bg-gradient-to-br from-slate-50 to-white border border-slate-200 p-5 sm:p-6 shadow-lg"
+              >
+                <div className="flex items-start gap-4">
+                  <div className={`flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br ${node.color} flex items-center justify-center text-2xl text-white shadow-lg`}>
+                    {node.icon}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[11px] uppercase tracking-wider text-emerald-600 font-bold mb-1">
+                      Настройка блока
+                    </div>
+                    <h3 className="font-extrabold text-lg sm:text-xl text-slate-900">{node.details.title}</h3>
+                    <ul className="mt-3 space-y-1.5">
+                      {node.details.items.map((item, j) => (
+                        <li key={j} className="flex items-start gap-2 text-sm text-slate-600">
+                          <span className="text-emerald-500 font-bold mt-0.5">✓</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Bottom hint */}
+            <div className="px-4 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between flex-wrap gap-2">
+              <div className="text-xs text-slate-500">
+                💡 Нажмите на любой блок чтобы увидеть что внутри
+              </div>
+              <a
+                href={APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
+              >
+                Собрать свой → бесплатно 7 дней
+              </a>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Quick onboarding strip below */}
+        <FadeIn delay={0.3}>
+          <div className="mt-8 sm:mt-10 grid sm:grid-cols-3 gap-3 sm:gap-4">
+            {[
+              { num: "01", title: "Зарегистрируйтесь", desc: "Email + пароль. 10 секунд." },
+              { num: "02", title: "Подключите WhatsApp", desc: "QR-код с телефона." },
+              { num: "03", title: "Соберите бота", desc: "Drag-and-drop, без кода." },
+            ].map((s, i) => (
+              <div key={i} className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200 card-soft">
+                <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-mono text-sm font-bold">
+                  {s.num}
+                </div>
+                <div>
+                  <div className="font-bold text-slate-900 text-sm">{s.title}</div>
+                  <div className="text-xs text-slate-500 mt-0.5">{s.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
 }
+
+// Keep old function name for the export below
+const HowItWorks = FlowBuilder;
 
 // ========================
 // FEATURES
@@ -349,6 +709,262 @@ interface ChatMsg {
   text: string;
   type?: "text" | "buttons" | "card" | "success";
   buttons?: Array<{ label: string; value: string }>;
+}
+
+// ────────────────────────────────────────────────────────────────────
+// DemoCRMPanel — "live" Connect dashboard mock that reacts to the
+// phone-side demo. Shows: customer card, AI suggestion, order being
+// built, stats counter ticking up. The whole point: visualize that
+// while the customer just clicks buttons in WhatsApp, the salon owner
+// sees a real CRM filling itself.
+// ────────────────────────────────────────────────────────────────────
+
+function DemoCRMPanel({ step, messages }: { step: number; messages: ChatMsg[] }) {
+  // Pick a service the user chose (if any) by scanning for known labels.
+  const userTexts = messages.filter((m) => m.from === "user").map((m) => m.text);
+  const chosenService = (() => {
+    const t = userTexts.join(" ");
+    if (/маникюр/i.test(t)) return { name: "Маникюр + покрытие", price: 8000 };
+    if (/педикюр/i.test(t)) return { name: "Педикюр", price: 6500 };
+    if (/брови/i.test(t)) return { name: "Брови", price: 4000 };
+    return null;
+  })();
+  const chosenTime = (() => {
+    const t = userTexts.join(" ");
+    const m = t.match(/завтра.*\d{1,2}:\d{2}|послезавтра.*\d{1,2}:\d{2}/i);
+    return m ? m[0] : null;
+  })();
+
+  // Tag system — bot decides who's who.
+  const tags: { label: string; color: string; show: boolean }[] = [
+    { label: "Новый клиент", color: "bg-blue-100 text-blue-700", show: true },
+    { label: "Маникюр", color: "bg-pink-100 text-pink-700", show: !!chosenService && chosenService.name.includes("Маникюр") },
+    { label: "Заказ оформлен", color: "bg-emerald-100 text-emerald-700", show: step >= 4 },
+  ];
+
+  // Live stats counter — bumps when step reaches "done"
+  const baseStats = { messages: 47, leads: 12, orders: 5, revenue: 84000 };
+  const stats = step >= 4
+    ? { messages: 48, leads: 13, orders: 6, revenue: 84000 + (chosenService?.price ?? 5000) }
+    : baseStats;
+
+  // Activity feed entries — appear as user progresses.
+  // Use full Tailwind class names (not interpolation) so JIT picks them up.
+  const feed = [
+    { id: "f1", show: step >= 0, time: "сейчас",        actor: "Айгуль", text: "написала первой",         dot: "bg-blue-500" },
+    { id: "f2", show: step >= 1, time: "5 сек назад",   actor: "Бот",    text: "показал каталог услуг",   dot: "bg-emerald-500" },
+    { id: "f3", show: step >= 2, time: "12 сек назад",  actor: "Бот",    text: "предложил время",         dot: "bg-amber-500" },
+    { id: "f4", show: step >= 3, time: "20 сек назад",  actor: "Бот",    text: "запросил подтверждение",  dot: "bg-purple-500" },
+    { id: "f5", show: step >= 4, time: "26 сек назад",  actor: "Бот",    text: "оформил заказ ✅",         dot: "bg-green-500" },
+  ].filter((f) => f.show);
+
+  return (
+    <div className="relative">
+      {/* Browser frame */}
+      <div className="rounded-2xl border-2 border-slate-200 bg-white shadow-2xl shadow-slate-300/40 overflow-hidden">
+        {/* Browser bar */}
+        <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 border-b border-slate-200">
+          <div className="flex gap-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-rose-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+          </div>
+          <div className="flex-1 ml-3">
+            <div className="bg-white rounded-md px-3 py-1 text-[11px] text-slate-500 border border-slate-200 max-w-fit">
+              connect.esepkz.com/app/
+            </div>
+          </div>
+          <div className="text-[10px] text-slate-400 hidden sm:block font-mono">Connect Dashboard</div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-[180px_1fr] min-h-[480px]">
+          {/* Sidebar */}
+          <div className="bg-slate-50/70 border-r border-slate-200 p-3 hidden sm:block">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-700 text-white text-xs font-extrabold flex items-center justify-center">C</div>
+              <div className="font-bold text-sm text-slate-900">Connect</div>
+            </div>
+            <div className="space-y-0.5">
+              {[
+                { l: "Inbox", a: true, badge: 3 },
+                { l: "Лиды", a: false },
+                { l: "Каталог", a: false },
+                { l: "Заказы", a: false, badge: stats.orders },
+                { l: "Кампании", a: false },
+                { l: "Расписание", a: false },
+                { l: "AI-бот", a: false },
+              ].map((it, i) => (
+                <div
+                  key={i}
+                  className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs ${
+                    it.a ? "bg-emerald-100 text-emerald-700 font-bold" : "text-slate-600 hover:bg-slate-100"
+                  }`}
+                >
+                  <span>{it.l}</span>
+                  {it.badge && (
+                    <span className={`text-[10px] px-1.5 py-0 rounded-full ${it.a ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-700"} font-bold`}>
+                      {it.badge}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main */}
+          <div className="p-4 sm:p-5 space-y-4">
+            {/* Stats row */}
+            <div className="grid grid-cols-4 gap-2">
+              {[
+                { label: "Сообщ.", value: stats.messages, color: "text-slate-700" },
+                { label: "Лиды", value: stats.leads, color: "text-blue-600" },
+                { label: "Заказы", value: stats.orders, color: "text-emerald-600" },
+                { label: "₸ выручка", value: stats.revenue.toLocaleString("ru-RU"), color: "text-amber-600" },
+              ].map((s, i) => (
+                <motion.div
+                  key={i}
+                  layout
+                  className="rounded-xl border border-slate-200 bg-white p-2 sm:p-3"
+                >
+                  <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider font-medium">{s.label}</div>
+                  <motion.div
+                    key={String(s.value)}
+                    initial={{ scale: 1.2, color: "#22c55e" }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 0.4 }}
+                    className={`text-sm sm:text-lg font-extrabold ${s.color} mt-0.5`}
+                  >
+                    {s.value}
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Customer card */}
+            <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white to-slate-50 p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 text-white font-bold flex items-center justify-center text-lg">
+                  А
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="font-bold text-slate-900">Айгуль</div>
+                    <div className="text-xs text-slate-500">+7 707 *** **</div>
+                  </div>
+                  <div className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-0.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> онлайн
+                  </div>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    <AnimatePresence>
+                      {tags.filter((t) => t.show).map((t, i) => (
+                        <motion.span
+                          key={t.label}
+                          initial={{ opacity: 0, scale: 0.7 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ delay: i * 0.05 }}
+                          className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${t.color}`}
+                        >
+                          {t.label}
+                        </motion.span>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
+                <div className="text-[10px] text-slate-400 hidden sm:block">только что</div>
+              </div>
+
+              {/* Order being built */}
+              <AnimatePresence>
+                {chosenService && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mt-3 rounded-xl bg-white border border-slate-200 overflow-hidden"
+                  >
+                    <div className="px-3 py-2 bg-emerald-50 border-b border-emerald-100 text-[10px] font-bold text-emerald-700 uppercase tracking-wider flex items-center gap-1.5">
+                      <span>📥</span>
+                      <span>Заказ #1247</span>
+                      {step >= 4 && (
+                        <span className="ml-auto px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px]">Подтверждён</span>
+                      )}
+                    </div>
+                    <div className="p-3 space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-slate-700">{chosenService.name}</span>
+                        <span className="font-bold text-slate-900">{chosenService.price.toLocaleString("ru-RU")} ₸</span>
+                      </div>
+                      {chosenTime && (
+                        <div className="flex items-center justify-between text-xs text-slate-500">
+                          <span>🕐 Время</span>
+                          <span className="font-medium text-slate-700">{chosenTime}</span>
+                        </div>
+                      )}
+                      <div className="border-t border-slate-100 pt-2 flex items-center justify-between">
+                        <span className="text-xs text-slate-500">Итого</span>
+                        <span className="font-extrabold text-emerald-600 text-base">
+                          {chosenService.price.toLocaleString("ru-RU")} ₸
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Activity feed */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-3">
+              <div className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-2 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Активность бота — в реальном времени
+              </div>
+              <div className="space-y-1.5">
+                <AnimatePresence>
+                  {feed.map((f) => (
+                    <motion.div
+                      key={f.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="flex items-center gap-2 text-xs"
+                    >
+                      <div className={`w-1.5 h-1.5 rounded-full ${f.dot} flex-shrink-0`} />
+                      <span className="text-slate-400 w-20 sm:w-24 flex-shrink-0">{f.time}</span>
+                      <span className="text-slate-700">
+                        <strong className="text-slate-900">{f.actor}</strong> {f.text}
+                      </span>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Floating "Заказ +X ₸" badge appears when step=done */}
+      <AnimatePresence>
+        {step >= 4 && chosenService && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 14 }}
+            className="absolute -top-3 -right-3 px-3 py-2 rounded-2xl bg-white border border-emerald-300 shadow-xl shadow-emerald-200/40 flex items-center gap-2 z-10"
+          >
+            <div className="w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center text-lg">💸</div>
+            <div>
+              <div className="text-[10px] text-slate-500 leading-tight">Новый заказ</div>
+              <div className="text-emerald-700 font-bold text-sm">+{chosenService.price.toLocaleString("ru-RU")} ₸</div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function InteractiveDemo() {
@@ -432,21 +1048,27 @@ function InteractiveDemo() {
   }, [addBotMsg]);
 
   return (
-    <section id="demo" className="py-16 sm:py-20 bg-gradient-to-b from-white to-slate-50/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <FadeIn className="text-center mb-10 sm:mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-100/60 text-green-700 text-xs sm:text-sm font-medium mb-4">
-            Интерактивное демо
+    <section id="demo" className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 via-emerald-50/30 to-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs sm:text-sm font-bold uppercase tracking-wider mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Живое демо
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Попробуйте прямо сейчас</h2>
-          <p className="text-slate-500 mt-3 text-base sm:text-lg">Нажимайте кнопки — как клиент в WhatsApp</p>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+            Слева — клиент пишет,<br className="sm:hidden" /> справа — <span className="text-gradient">вы видите заказ</span>
+          </h2>
+          <p className="text-slate-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            Нажимайте кнопки в WhatsApp слева — следите как бот собирает заказ и кладёт его в ваш дашборд.
+          </p>
         </FadeIn>
 
-        <FadeIn delay={0.2}>
-          <div className="max-w-[420px] mx-auto">
-            <div className="relative">
+        <FadeIn delay={0.15}>
+          <div className="grid lg:grid-cols-[420px_1fr] gap-6 lg:gap-10 items-start">
+            {/* ── LEFT: WhatsApp phone ── */}
+            <div className="relative mx-auto w-full max-w-[420px]">
               <div className="absolute -inset-6 bg-green-400/15 rounded-[2rem] blur-2xl" />
-              <div className="relative rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xl shadow-slate-300/40">
+              <div className="relative rounded-[28px] border-[10px] border-slate-900 bg-white overflow-hidden shadow-2xl shadow-slate-400/40">
                 {/* WhatsApp header */}
                 <div className="bg-[#075e54] px-3 sm:px-4 py-2.5 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">S</div>
@@ -458,7 +1080,7 @@ function InteractiveDemo() {
                   </div>
                 </div>
 
-                <div ref={chatRef} className="h-[360px] sm:h-[400px] overflow-y-auto p-3 space-y-2 scroll-smooth bg-[#e5ddd5]">
+                <div ref={chatRef} className="h-[360px] sm:h-[420px] overflow-y-auto p-3 space-y-2 scroll-smooth bg-[#e5ddd5]">
                   <AnimatePresence>
                     {messages.map((msg) => (
                       <motion.div
@@ -515,16 +1137,19 @@ function InteractiveDemo() {
                   )}
                 </div>
               </div>
+
+              <div className="flex justify-center gap-2 mt-5 flex-wrap">
+                {["Привет", "Услуга", "Время", "Подтв.", "Готово"].map((label, i) => (
+                  <div key={i} className="flex items-center gap-1.5">
+                    <div className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= step ? "bg-green-500 shadow shadow-green-400/50" : "bg-slate-300"}`} />
+                    <span className={`text-[11px] hidden sm:inline transition-colors ${i <= step ? "text-green-700 font-medium" : "text-slate-400"}`}>{label}</span>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="flex justify-center gap-2 mt-5 sm:mt-6 flex-wrap">
-              {["Привет", "Услуга", "Время", "Подтв.", "Готово"].map((label, i) => (
-                <div key={i} className="flex items-center gap-1.5">
-                  <div className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= step ? "bg-green-500 shadow shadow-green-400/50" : "bg-slate-300"}`} />
-                  <span className={`text-[11px] hidden sm:inline transition-colors ${i <= step ? "text-green-700 font-medium" : "text-slate-400"}`}>{label}</span>
-                </div>
-              ))}
-            </div>
+            {/* ── RIGHT: live CRM dashboard panel ── */}
+            <DemoCRMPanel step={step} messages={messages} />
           </div>
         </FadeIn>
       </div>
