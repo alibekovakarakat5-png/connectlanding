@@ -700,6 +700,183 @@ function Features() {
 }
 
 // ========================
+// SHEETS INTEGRATION SECTION — "уже работаете в Excel? подключите за 30 сек"
+// ========================
+
+function SheetsIntegration() {
+  return (
+    <section className="py-16 sm:py-24">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <FadeIn className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs sm:text-sm font-bold uppercase tracking-wider mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+            Без миграции данных
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+            Уже ведёте всё в <span className="text-gradient">Excel</span> или Google Sheets?
+          </h2>
+          <p className="text-slate-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            Не нужно переносить данные вручную. Подключите ссылку на свою таблицу — Connect сам подтянет товары, расписание и клиентов.
+          </p>
+        </FadeIn>
+
+        <FadeIn delay={0.15}>
+          <div className="grid lg:grid-cols-[1.2fr_1fr] gap-8 items-center">
+            {/* Left: 3-step instruction */}
+            <div className="space-y-4">
+              {[
+                {
+                  n: 1,
+                  icon: "📊",
+                  title: "Откройте свою таблицу в Google Sheets / Excel",
+                  desc: 'Та таблица где у вас уже хранятся товары, прайс или контакты клиентов.',
+                },
+                {
+                  n: 2,
+                  icon: "🔗",
+                  title: 'Файл → "Опубликовать в интернете" → CSV',
+                  desc: "Google создаст публичную ссылку. Подойдёт также OneDrive / Excel Online.",
+                },
+                {
+                  n: 3,
+                  icon: "⚡",
+                  title: "Вставьте ссылку в Connect → жмёте «Синхронизировать»",
+                  desc: 'Готово. Меняете таблицу → жмёте Sync → данные обновятся в боте.',
+                },
+              ].map((s) => (
+                <div
+                  key={s.n}
+                  className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-slate-200 card-soft"
+                >
+                  <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center text-2xl">
+                    {s.icon}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-mono text-blue-600 font-bold uppercase tracking-wider">
+                        Шаг {s.n}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-base sm:text-lg leading-snug">{s.title}</h3>
+                    <p className="text-slate-500 text-sm mt-1">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+              <div className="pl-5 pt-2">
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  ✓ Названия колонок на русском или английском · ✓ Без OAuth и Google Cloud Console · ✓ Двусторонняя синхронизация — изменения в Sheets подхватываются автоматически
+                </p>
+              </div>
+            </div>
+
+            {/* Right: animated sheet → bot mockup */}
+            <SheetSyncMockup />
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
+
+function SheetSyncMockup() {
+  return (
+    <div className="relative">
+      <div className="absolute -inset-4 bg-blue-200/20 rounded-3xl blur-2xl" />
+      <div className="relative space-y-3">
+        {/* Spreadsheet card */}
+        <div className="rounded-2xl border-2 border-slate-200 bg-white shadow-lg overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white">
+            <div className="w-6 h-6 rounded bg-white text-emerald-700 flex items-center justify-center font-bold text-xs">
+              X
+            </div>
+            <span className="text-sm font-medium">Прайс — Маникюр.xlsx</span>
+            <span className="ml-auto text-[10px] opacity-80">Google Sheets</span>
+          </div>
+          <table className="w-full text-xs">
+            <thead className="bg-slate-100 border-b border-slate-200">
+              <tr>
+                <th className="px-3 py-2 text-left font-bold text-slate-700">name</th>
+                <th className="px-3 py-2 text-left font-bold text-slate-700">price</th>
+                <th className="px-3 py-2 text-left font-bold text-slate-700">stock</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { n: "Маникюр классический", p: "5 000 ₸", s: "99" },
+                { n: "Маникюр + покрытие", p: "8 000 ₸", s: "99" },
+                { n: "Педикюр", p: "6 500 ₸", s: "99" },
+                { n: "Брови + краска", p: "4 000 ₸", s: "99" },
+              ].map((r, i) => (
+                <tr key={i} className="border-b border-slate-100 hover:bg-slate-50">
+                  <td className="px-3 py-2 text-slate-700">{r.n}</td>
+                  <td className="px-3 py-2 text-slate-900 font-semibold">{r.p}</td>
+                  <td className="px-3 py-2 text-slate-500">{r.s}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Animated arrow */}
+        <div className="flex justify-center">
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center gap-1"
+          >
+            <div className="w-1 h-6 bg-gradient-to-b from-blue-400 to-emerald-400 rounded-full" />
+            <div className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
+              Sync · auto
+            </div>
+            <div className="w-1 h-6 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
+          </motion.div>
+        </div>
+
+        {/* Connect catalog card */}
+        <div className="rounded-2xl border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-lg overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white">
+            <div className="w-6 h-6 rounded-lg bg-white text-emerald-700 flex items-center justify-center font-bold text-xs">
+              C
+            </div>
+            <span className="text-sm font-medium">Каталог Connect — салон Beauty</span>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 1, 1, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+              className="ml-auto text-[10px] bg-white/20 px-2 py-0.5 rounded-full"
+            >
+              ✓ обновлено
+            </motion.span>
+          </div>
+          <div className="p-3 space-y-2">
+            {[
+              { e: "💅", n: "Маникюр классический", p: "5 000 ₸" },
+              { e: "✨", n: "Маникюр + покрытие", p: "8 000 ₸" },
+              { e: "🦶", n: "Педикюр", p: "6 500 ₸" },
+              { e: "✏️", n: "Брови + краска", p: "4 000 ₸" },
+            ].map((r, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + i * 0.1 }}
+                className="flex items-center justify-between p-2 rounded-lg bg-white shadow-sm border border-emerald-100"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{r.e}</span>
+                  <span className="text-xs text-slate-700 font-medium">{r.n}</span>
+                </div>
+                <span className="text-xs font-bold text-emerald-700">{r.p}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ========================
 // INTERACTIVE DEMO
 // ========================
 
@@ -1514,6 +1691,7 @@ export default function Home() {
       <Problem />
       <HowItWorks />
       <Features />
+      <SheetsIntegration />
       <InteractiveDemo />
       <Pricing />
       <FAQ />
