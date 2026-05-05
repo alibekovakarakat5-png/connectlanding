@@ -343,29 +343,107 @@ function StatsBar() {
 // ========================
 
 function Problem() {
-  const problems = [
-    { icon: "⏰", text: "Менеджер тратит 4+ часа/день на переписку" },
-    { icon: "🚫", text: "Номера банят за массовые рассылки" },
-    { icon: "📊", text: "Нет аналитики — не видно кто купил" },
-    { icon: "🤖", text: "Каждое сообщение пишется вручную" },
+  const rows = [
+    {
+      pain: "Менеджер тратит 4+ часа/день на переписку",
+      solution: "Бот отвечает мгновенно — 24/7",
+      painIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      ),
+      solutionIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      ),
+    },
+    {
+      pain: "Номера банят за массовые рассылки",
+      solution: "Антибан-защита, 5 уровней",
+      painIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M5 5l14 14"/></svg>
+      ),
+      solutionIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/></svg>
+      ),
+    },
+    {
+      pain: "Нет аналитики — не видно кто купил",
+      solution: "Дашборд с лидами, заказами, выручкой",
+      painIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 6-6"/></svg>
+      ),
+      solutionIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6v6H9z"/></svg>
+      ),
+    },
+    {
+      pain: "Каждое сообщение пишется вручную",
+      solution: "Шаблоны + AI отвечают за вас",
+      painIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      ),
+      solutionIcon: (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+      ),
+    },
   ];
+
   return (
-    <section className="py-16 sm:py-20">
+    <section className="py-16 sm:py-24 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <FadeIn className="text-center mb-10 sm:mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Знакомо?</h2>
-          <p className="text-slate-500 mt-3 text-base sm:text-lg">Эти проблемы решает Connect</p>
+        <FadeIn className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs sm:text-sm font-bold uppercase tracking-wider mb-4">
+            До и после
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+            Знакомые проблемы — <span className="text-gradient">наши решения</span>
+          </h2>
         </FadeIn>
-        <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-          {problems.map((p, i) => (
-            <FadeIn key={i} delay={i * 0.08}>
-              <div className="flex items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-100">
-                <span className="text-2xl sm:text-3xl">{p.icon}</span>
-                <span className="text-slate-700 text-sm sm:text-base pt-0.5">{p.text}</span>
+
+        <FadeIn delay={0.15}>
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white to-slate-50/50 overflow-hidden">
+            {/* Header row */}
+            <div className="grid grid-cols-2 border-b border-slate-200 bg-slate-50/50">
+              <div className="px-5 sm:px-7 py-4 border-r border-slate-200">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  <span className="text-[11px] sm:text-xs uppercase tracking-wider font-bold text-slate-500">
+                    Без Connect
+                  </span>
+                </div>
               </div>
-            </FadeIn>
-          ))}
-        </div>
+              <div className="px-5 sm:px-7 py-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-[11px] sm:text-xs uppercase tracking-wider font-bold text-emerald-600">
+                    С Connect
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Rows */}
+            {rows.map((r, i) => (
+              <div
+                key={i}
+                className="grid grid-cols-2 border-b border-slate-100 last:border-b-0 hover:bg-slate-50/40 transition-colors"
+              >
+                {/* Pain */}
+                <div className="px-5 sm:px-7 py-4 sm:py-5 border-r border-slate-200 flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center">
+                    {r.painIcon}
+                  </div>
+                  <span className="text-slate-600 text-sm sm:text-[15px]">{r.pain}</span>
+                </div>
+                {/* Solution */}
+                <div className="px-5 sm:px-7 py-4 sm:py-5 flex items-center gap-3">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    {r.solutionIcon}
+                  </div>
+                  <span className="text-slate-900 font-semibold text-sm sm:text-[15px]">{r.solution}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
