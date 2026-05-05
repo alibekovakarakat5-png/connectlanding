@@ -747,31 +747,236 @@ const HowItWorks = FlowBuilder;
 
 function Features() {
   const features = [
-    { icon: "🛍️", title: "Каталог товаров", desc: "Бот покажет товары с фото, ценами и кнопками заказа прямо в чате.", color: "from-green-50 to-emerald-50/40", border: "border-green-200/60", iconBg: "bg-green-100" },
-    { icon: "📅", title: "Запись на приём", desc: "Клиент выбирает услугу и время — заявка сразу в дашборде.", color: "from-blue-50 to-cyan-50/40", border: "border-blue-200/60", iconBg: "bg-blue-100" },
-    { icon: "📢", title: "Рассылки", desc: "Массовая отправка по сегментам с антибан-задержками.", color: "from-purple-50 to-fuchsia-50/40", border: "border-purple-200/60", iconBg: "bg-purple-100" },
-    { icon: "🤖", title: "AI чат-бот", desc: "Подключите OpenAI — бот отвечает 24/7 по вашей базе знаний.", color: "from-orange-50 to-amber-50/40", border: "border-orange-200/60", iconBg: "bg-orange-100" },
-    { icon: "👥", title: "CRM лидов", desc: "Статусы, теги, история переписки. Сегментация по поведению.", color: "from-pink-50 to-rose-50/40", border: "border-pink-200/60", iconBg: "bg-pink-100" },
-    { icon: "🛡️", title: "Антибан", desc: "5 уровней защиты: warmup, очередь, рандом-задержки, slowdown.", color: "from-emerald-50 to-teal-50/40", border: "border-emerald-200/60", iconBg: "bg-emerald-100" },
+    {
+      title: "Каталог товаров и услуг",
+      desc: "Бот показывает товары с фото, ценами и кнопкой заказа прямо в чате WhatsApp.",
+      bullets: [
+        "Импорт из Google Sheets / Excel",
+        "Категории, фильтры, остатки",
+        "Inline-кнопки «Купить» / «В корзину»",
+      ],
+      examples: ["Цветочные", "Кофейни", "Школы", "Магазины"],
+      iconColor: "text-emerald-700",
+      iconBg: "bg-emerald-50",
+      iconBorder: "border-emerald-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
+      ),
+    },
+    {
+      title: "Запись и расписание",
+      desc: "Клиент выбирает услугу и свободное время — заявка приходит в ваш дашборд автоматически.",
+      bullets: [
+        "Реальное расписание, без накладок",
+        "Защита от двойных бронирований",
+        "Авто-напоминания клиенту",
+      ],
+      examples: ["Салоны", "Школы / курсы", "Клиники", "Спортзалы"],
+      iconColor: "text-blue-700",
+      iconBg: "bg-blue-50",
+      iconBorder: "border-blue-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+          <path d="M8 14h.01"/>
+          <path d="M12 14h.01"/>
+          <path d="M16 14h.01"/>
+        </svg>
+      ),
+    },
+    {
+      title: "Массовые рассылки",
+      desc: "Массовая отправка сегментам клиентов с антибан-задержками и трекингом доставки.",
+      bullets: [
+        "Сегментация по тегам / статусам",
+        "Шаблоны с переменными {{name}}",
+        "Отчёт: sent / read / replied",
+      ],
+      examples: ["Школы → родителям", "Цветочные → акции", "Все ниши"],
+      iconColor: "text-purple-700",
+      iconBg: "bg-purple-50",
+      iconBorder: "border-purple-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="m3 11 18-5v12L3 14v-3z"/>
+          <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+        </svg>
+      ),
+    },
+    {
+      title: "AI чат-бот 24/7",
+      desc: "Бот отвечает клиентам по вашей базе знаний. Не врёт, не выдумывает — только факты из ваших документов.",
+      bullets: [
+        "На основе FAQ и каталога",
+        "Не перебивает менеджера",
+        "Эскалация жалоб → к человеку",
+      ],
+      examples: ["Школы → вопросы родителей", "Доставка", "Услуги"],
+      iconColor: "text-amber-700",
+      iconBg: "bg-amber-50",
+      iconBorder: "border-amber-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="6" width="18" height="14" rx="2"/>
+          <path d="M8 6V4a4 4 0 0 1 8 0v2"/>
+          <circle cx="9" cy="13" r="1"/>
+          <circle cx="15" cy="13" r="1"/>
+          <path d="M9 17h6"/>
+        </svg>
+      ),
+    },
+    {
+      title: "CRM лидов и клиентов",
+      desc: "Все контакты с историей переписки, статусами, тегами. Сегментация по поведению — для точечных кампаний.",
+      bullets: [
+        "Воронка: новый → клиент",
+        "Авто-теги по поведению",
+        "История диалогов в одном месте",
+      ],
+      examples: ["Школы → ученики и родители", "Все ниши"],
+      iconColor: "text-pink-700",
+      iconBg: "bg-pink-50",
+      iconBorder: "border-pink-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      ),
+    },
+    {
+      title: "Антибан-защита",
+      desc: "5 уровней защиты вашего WhatsApp-номера: warmup, очередь, рандом-задержки, эмуляция набора, auto-slowdown.",
+      bullets: [
+        "Прогрев нового номера 14 дней",
+        "12 сообщений/мин, 300/час лимит",
+        "Auto-slowdown при rate-limit",
+      ],
+      examples: ["Все, кто шлёт > 50 сообщений/день"],
+      iconColor: "text-teal-700",
+      iconBg: "bg-teal-50",
+      iconBorder: "border-teal-200",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      ),
+    },
   ];
+
   return (
-    <section id="features" className="py-16 sm:py-20">
+    <section id="features" className="py-16 sm:py-24 bg-gradient-to-b from-white via-slate-50/30 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <FadeIn className="text-center mb-12 sm:mb-16">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Всё для бизнеса в WhatsApp</h2>
-          <p className="text-slate-500 mt-3 text-base sm:text-lg">CRM, каталог, рассылки и AI — в одной платформе</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900 text-white text-xs sm:text-sm font-bold uppercase tracking-wider mb-4">
+            Возможности платформы
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight max-w-3xl mx-auto">
+            Всё для бизнеса <span className="text-gradient">в WhatsApp</span>
+          </h2>
+          <p className="text-slate-600 mt-4 text-base sm:text-lg max-w-2xl mx-auto">
+            CRM, каталог, рассылки, AI и расписание — одна платформа, один тариф, все интеграции.
+          </p>
         </FadeIn>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {features.map((f, i) => (
             <FadeIn key={i} delay={i * 0.06}>
-              <div className={`p-6 sm:p-7 rounded-3xl border ${f.border} bg-gradient-to-br ${f.color} card-soft transition-all duration-300 h-full`}>
-                <div className={`w-12 h-12 rounded-2xl ${f.iconBg} flex items-center justify-center text-2xl mb-4`}>{f.icon}</div>
-                <h3 className="text-lg font-bold mb-2 text-slate-900">{f.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{f.desc}</p>
+              <div
+                className="group relative p-6 sm:p-7 rounded-3xl border border-slate-200 bg-white card-soft hover:border-slate-300 transition-all duration-300 h-full flex flex-col"
+              >
+                {/* Icon block — squared, with subtle border, much more refined than emoji */}
+                <div
+                  className={`w-14 h-14 rounded-2xl ${f.iconBg} ${f.iconColor} border ${f.iconBorder} flex items-center justify-center mb-5 group-hover:scale-105 transition-transform`}
+                >
+                  {f.icon}
+                </div>
+
+                <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight mb-2">
+                  {f.title}
+                </h3>
+                <p className="text-slate-600 text-sm sm:text-[15px] leading-relaxed mb-5">
+                  {f.desc}
+                </p>
+
+                {/* Bullet list */}
+                <ul className="space-y-1.5 mb-5">
+                  {f.bullets.map((b, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm text-slate-700">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={`flex-shrink-0 mt-1 ${f.iconColor}`}>
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Examples row at the bottom — pushes feature card to look like a real product card */}
+                <div className="mt-auto pt-4 border-t border-slate-100">
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1.5">
+                    Подходит
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {f.examples.map((e, k) => (
+                      <span
+                        key={k}
+                        className={`text-[11px] px-2 py-0.5 rounded-full ${f.iconBg} ${f.iconColor} font-semibold`}
+                      >
+                        {e}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
             </FadeIn>
           ))}
         </div>
+
+        {/* Industries strip — confirms breadth of audience */}
+        <FadeIn delay={0.4}>
+          <div className="mt-10 sm:mt-14 rounded-3xl border border-slate-200 bg-white card-soft p-6 sm:p-8">
+            <div className="grid sm:grid-cols-[auto_1fr] gap-5 sm:gap-8 items-center">
+              <div>
+                <div className="text-[11px] uppercase tracking-wider font-bold text-slate-500 mb-1">
+                  Кто уже использует
+                </div>
+                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  6+ ниш бизнеса
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                {[
+                  { emoji: "💅", label: "Салоны красоты" },
+                  { emoji: "🌸", label: "Цветочные / доставка" },
+                  { emoji: "☕", label: "Кофейни и кафе" },
+                  { emoji: "🍕", label: "Доставка еды" },
+                  { emoji: "🎓", label: "Школы и курсы" },
+                  { emoji: "🧒", label: "Детские центры" },
+                  { emoji: "🏪", label: "Магазины" },
+                  { emoji: "💆", label: "Спа / клиники" },
+                ].map((n, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 hover:bg-white transition"
+                  >
+                    <span className="text-lg">{n.emoji}</span>
+                    <span className="text-sm font-semibold text-slate-700">{n.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );
@@ -1609,13 +1814,14 @@ function LeadForm() {
         >
           <option value="">Выберите</option>
           <option>Салон красоты</option>
+          <option>Школа / языковые курсы</option>
+          <option>Детский центр / репетитор</option>
           <option>Кофейня / ресторан</option>
           <option>Доставка цветов</option>
           <option>Доставка еды</option>
-          <option>Детский центр</option>
-          <option>Курсы / школа</option>
           <option>Фитнес / спа</option>
           <option>Магазин / интернет-магазин</option>
+          <option>Клиника / медицинский центр</option>
           <option>Другое</option>
         </select>
       </div>
