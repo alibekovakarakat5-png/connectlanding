@@ -1124,14 +1124,11 @@ function SheetSyncMockup() {
               C
             </div>
             <span className="text-sm font-medium">Каталог Connect — салон Beauty</span>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 1, 1, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
-              className="ml-auto text-[10px] bg-white/20 px-2 py-0.5 rounded-full"
-            >
+            {/* Static badge — was infinite opacity flicker which read as
+                "trembling block" next to the rest of the page. */}
+            <span className="ml-auto text-[10px] bg-white/20 px-2 py-0.5 rounded-full">
               ✓ обновлено
-            </motion.span>
+            </span>
           </div>
           <div className="p-3 space-y-2">
             {[
