@@ -1528,49 +1528,44 @@ function InteractiveDemo() {
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <div className="grid lg:grid-cols-[500px_1fr] gap-6 lg:gap-10 items-start">
-            {/* ── LEFT: WhatsApp phone — bigger, iPhone-realistic frame ── */}
-            <div className="relative mx-auto w-full max-w-[500px]">
-              <div className="absolute -inset-8 bg-green-400/15 rounded-[3rem] blur-3xl" />
+          <div className="grid lg:grid-cols-[440px_1fr] gap-6 lg:gap-10 items-start">
+            {/* ── LEFT: WhatsApp phone — slightly bigger than original 420px,
+                iPhone-style frame but compact so it fits on mobile (no
+                absolute-positioned side buttons that overflow). ── */}
+            <div className="relative mx-auto w-full max-w-[360px] sm:max-w-[440px]">
+              <div className="absolute -inset-6 bg-green-400/15 rounded-[2.5rem] blur-2xl" />
 
-              {/* iPhone-style outer frame: thick rounded bezel + side buttons */}
-              <div className="relative rounded-[44px] border-[14px] border-slate-900 bg-slate-900 overflow-hidden shadow-2xl shadow-slate-500/40">
-                {/* Side buttons — realism */}
-                <div className="hidden sm:block absolute -left-[18px] top-24 w-[4px] h-10 bg-slate-800 rounded-l-md" />
-                <div className="hidden sm:block absolute -left-[18px] top-40 w-[4px] h-14 bg-slate-800 rounded-l-md" />
-                <div className="hidden sm:block absolute -left-[18px] top-60 w-[4px] h-14 bg-slate-800 rounded-l-md" />
-                <div className="hidden sm:block absolute -right-[18px] top-32 w-[4px] h-20 bg-slate-800 rounded-r-md" />
-
+              {/* iPhone-style outer frame */}
+              <div className="relative rounded-[36px] border-[10px] sm:border-[12px] border-slate-900 bg-slate-900 overflow-hidden shadow-2xl shadow-slate-400/40">
                 {/* Inner screen */}
-                <div className="rounded-[28px] overflow-hidden bg-white relative">
+                <div className="rounded-[24px] overflow-hidden bg-white relative">
                   {/* Dynamic Island */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-30" />
+                  <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-30" />
 
                   {/* Status bar */}
-                  <div className="bg-[#075e54] pt-2.5 pb-1 px-5 flex items-center justify-between text-white text-[11px] font-semibold">
+                  <div className="bg-[#075e54] pt-2 pb-1 px-4 flex items-center justify-between text-white text-[10px] font-semibold">
                     <span>9:41</span>
                     <span className="opacity-0">·</span>
                     <span className="flex items-center gap-1">
-                      <span>●●●</span>
+                      <span className="text-[8px]">●●●</span>
                       <span>100%</span>
                     </span>
                   </div>
 
                 {/* WhatsApp header */}
-                <div className="bg-[#075e54] px-3 sm:px-4 py-3 flex items-center gap-3 border-b border-black/20">
-                  <svg className="text-white/80" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-sm font-bold shadow-inner">S</div>
-                  <div className="flex-1">
-                    <div className="text-white text-[15px] font-semibold leading-tight">Салон Beauty</div>
-                    <div className="text-white/70 text-[11px] flex items-center gap-1 mt-0.5">
+                <div className="bg-[#075e54] px-3 py-2.5 flex items-center gap-2.5 border-b border-black/20">
+                  <svg className="text-white/80 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold shadow-inner flex-shrink-0">S</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white text-sm font-semibold leading-tight truncate">Салон Beauty</div>
+                    <div className="text-white/70 text-[10px] flex items-center gap-1 mt-0.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-green-300" /> Бот Connect · в сети
                     </div>
                   </div>
-                  <svg className="text-white/80" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <svg className="text-white/80" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                  <svg className="text-white/70 flex-shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
                 </div>
 
-                <div ref={chatRef} className="h-[500px] sm:h-[600px] overflow-y-auto p-3 sm:p-4 space-y-2 scroll-smooth bg-[#e5ddd5]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-opacity='0.03' fill='%23000'%3E%3Cpath d='M50 50m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0'/%3E%3C/g%3E%3C/svg%3E\")" }}>
+                <div ref={chatRef} className="h-[380px] sm:h-[460px] overflow-y-auto p-3 space-y-2 scroll-smooth bg-[#e5ddd5]">
                   <AnimatePresence>
                     {messages.map((msg) => (
                       <motion.div
@@ -1627,22 +1622,17 @@ function InteractiveDemo() {
                   )}
                 </div>
 
-                {/* WhatsApp composer bar — visual only, fills the bottom of the phone */}
-                <div className="bg-[#f0f0f0] px-3 py-2 flex items-center gap-2 border-t border-black/5">
-                  <svg className="text-slate-500" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                  <div className="flex-1 h-9 rounded-full bg-white px-3 flex items-center text-slate-400 text-sm">Сообщение</div>
-                  <svg className="text-slate-500" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
-                  <div className="w-9 h-9 rounded-full bg-[#075e54] flex items-center justify-center text-white">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                {/* Slim composer bar — keeps the WhatsApp feel without
+                    eating screen height. */}
+                <div className="bg-[#f0f0f0] px-2 py-1.5 flex items-center gap-1.5 border-t border-black/5">
+                  <svg className="text-slate-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                  <div className="flex-1 h-7 rounded-full bg-white px-3 flex items-center text-slate-400 text-xs">Сообщение</div>
+                  <div className="w-7 h-7 rounded-full bg-[#075e54] flex items-center justify-center text-white">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
                   </div>
                 </div>
                 </div>
                 {/* /Inner screen */}
-
-                {/* Home indicator (iOS-style) */}
-                <div className="bg-slate-900 py-1.5 flex justify-center">
-                  <div className="w-32 h-1 rounded-full bg-white/70" />
-                </div>
               </div>
 
               <div className="flex justify-center gap-2 mt-5 flex-wrap">
